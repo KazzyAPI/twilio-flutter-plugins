@@ -1,0 +1,8 @@
+.DS_Store
+.idea/
+*.iml
+.dart_tool/
+.packages
+build/
+logs/
+.cursor/projects/

@@ -1,0 +1,22 @@
+# Public API and requirement tokens that must appear in spec.md (one per line).
+TwilioConversationsClient
+TwilioConversationsSession
+TwilioConversationsMediaPolicy
+SendMessageCommand
+MessageAttributes
+TwilioConversationsEvent
+TwilioClientConnectionState
+TwilioParticipant
+listConversations
+getConversation
+getLastMessages
+getMessagesBefore
+getMediaTemporaryUrl
+sendMediaMessage
+SendMediaMessageCommand
+getParticipants
+sendTyping
+connect
+disconnect
+updateAccessToken
+sendMessage

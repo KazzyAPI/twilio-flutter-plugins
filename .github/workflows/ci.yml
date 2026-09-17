@@ -1,0 +1,118 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  documentation-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: SDD sync audit
+        run: scripts/check_sdd_sync.sh origin/${{ github.event.pull_request.base.ref || 'main' }}
+
+      - name: Documentation sync check
+        run: scripts/check_documentation_sync.sh origin/${{ github.event.pull_request.base.ref || 'main' }}
+
+      - name: Comment style check
+        run: scripts/check_comment_style.sh
+
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install core dependencies
+        run: dart pub get
+        working-directory: packages/twilio_flutter_core
+
+      - name: Analyze core
+        run: dart analyze --fatal-infos
+        working-directory: packages/twilio_flutter_core
+
+      - name: Test core
+        run: dart test
+        working-directory: packages/twilio_flutter_core
+
+      - name: Install conversations dependencies
+        run: flutter pub get
+        working-directory: packages/twilio_flutter_conversations
+
+      - name: Verify pigeon output is up to date
+        run: |
+          dart run pigeon --input pigeons/conversations_api.dart
+          git diff --exit-code lib/src/pigeon/conversations.pigeon.dart \
+            ios/Classes/Pigeon/ConversationsPigeon.swift \
+            android/src/main/kotlin/com/twilioflutter/conversations/pigeon/ConversationsPigeon.kt
+        working-directory: packages/twilio_flutter_conversations
+
+      - name: Analyze conversations
+        run: flutter analyze --fatal-infos
+        working-directory: packages/twilio_flutter_conversations
+
+      - name: Test conversations
+        run: flutter test
+        working-directory: packages/twilio_flutter_conversations
+
+  android-native-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Prepare example Android project
+        run: flutter pub get
+        working-directory: packages/twilio_flutter_conversations/example
+
+      - name: Run Android unit tests (plugin)
+        run: ./gradlew :twilio_flutter_conversations:testDebugUnitTest --no-daemon
+        working-directory: packages/twilio_flutter_conversations/example/android
+
+  ios-build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Prepare example
+        run: flutter pub get
+        working-directory: packages/twilio_flutter_conversations/example
+
+      - name: Build iOS (simulator, no codesign)
+        run: flutter build ios --simulator --no-codesign
+        working-directory: packages/twilio_flutter_conversations/example

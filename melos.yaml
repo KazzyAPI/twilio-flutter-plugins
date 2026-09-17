@@ -1,0 +1,25 @@
+name: twilio_flutter_plugins
+
+packages:
+  - packages/**
+
+scripts:
+  analyze:
+    run: melos exec -- dart analyze --fatal-infos
+    description: Run static analysis in all packages.
+
+  test:
+    run: melos exec --fail-fast -- dart test
+    description: Run Dart unit tests in pure Dart packages.
+
+  test:flutter:
+    run: melos exec --fail-fast -- flutter test
+    packageFilters:
+      flutter: true
+    description: Run Flutter tests in plugin packages.
+
+  pigeon:
+    run: dart run pigeon --input pigeons/conversations_api.dart
+    description: Regenerate pigeon bindings for conversations.
+    packageFilters:
+      scope: twilio_flutter_conversations

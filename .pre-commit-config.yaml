@@ -1,0 +1,44 @@
+repos:
+  - repo: local
+    hooks:
+      - id: sdd-sync
+        name: SDD sync (spec/plan/tasks + docs/ with code changes)
+        entry: scripts/check_sdd_sync.sh
+        language: script
+        pass_filenames: false
+        always_run: true
+
+      - id: documentation-sync
+        name: Documentation sync (integrator docs with code changes)
+        entry: scripts/check_documentation_sync.sh
+        language: script
+        pass_filenames: false
+        always_run: true
+
+      - id: comment-style
+        name: Comment style (no high-level boilerplate)
+        entry: scripts/check_comment_style.sh
+        language: script
+        pass_filenames: false
+        always_run: true
+
+      - id: pigeon-drift
+        name: Pigeon generated code up to date
+        entry: bash -c 'cd packages/twilio_flutter_conversations && dart run pigeon --input pigeons/conversations_api.dart && git diff --exit-code lib/src/pigeon/conversations.pigeon.dart ios/Classes/Pigeon/ConversationsPigeon.swift android/src/main/kotlin/com/twilioflutter/conversations/pigeon/ConversationsPigeon.kt'
+        language: system
+        pass_filenames: false
+        files: ^packages/twilio_flutter_conversations/pigeons/
+
+      - id: dart-analyze-core
+        name: dart analyze twilio_flutter_core
+        entry: bash -c 'cd packages/twilio_flutter_core && dart analyze --fatal-infos'
+        language: system
+        pass_filenames: false
+        files: ^packages/twilio_flutter_core/
+
+      - id: flutter-analyze-conversations
+        name: flutter analyze twilio_flutter_conversations
+        entry: bash -c 'cd packages/twilio_flutter_conversations && flutter analyze --fatal-infos'
+        language: system
+        pass_filenames: false
+        files: ^packages/twilio_flutter_conversations/
