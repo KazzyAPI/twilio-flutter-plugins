@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:twilio_flutter_core/twilio_flutter_core.dart';
 import 'package:twilio_flutter_video/twilio_flutter_video.dart';
 
 void main() {

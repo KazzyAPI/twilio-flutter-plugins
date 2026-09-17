@@ -36,4 +36,4 @@ specs/001-twilio-flutter-conversations/ # product spec (this feature)
 - `scripts/check_sdd_sync.sh`
 - `scripts/check_documentation_sync.sh`
 - `scripts/run_commit_hooks.sh` (manual pre-commit)
-- `.github/workflows/ci.yml`
+- `.github/workflows/ci.yml` (core, conversations, and `twilio_flutter_video` analyze/test; Flutter **3.47.4** via `.flutter-version`)

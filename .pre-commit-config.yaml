@@ -42,3 +42,10 @@ repos:
         language: system
         pass_filenames: false
         files: ^packages/twilio_flutter_conversations/
+
+      - id: flutter-analyze-video
+        name: flutter analyze twilio_flutter_video
+        entry: bash -c 'cd packages/twilio_flutter_video && flutter analyze --fatal-infos'
+        language: system
+        pass_filenames: false
+        files: ^packages/twilio_flutter_video/

@@ -72,6 +72,18 @@ jobs:
         run: flutter test
         working-directory: packages/twilio_flutter_conversations
 
+      - name: Install video dependencies
+        run: flutter pub get
+        working-directory: packages/twilio_flutter_video
+
+      - name: Analyze video
+        run: flutter analyze --fatal-infos
+        working-directory: packages/twilio_flutter_video
+
+      - name: Test video
+        run: flutter test
+        working-directory: packages/twilio_flutter_video
+
   android-native-tests:
     runs-on: ubuntu-latest
     steps:

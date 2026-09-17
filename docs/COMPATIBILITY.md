@@ -2,6 +2,8 @@
 
 Pin versions together when upgrading. After bumping a Twilio SDK, run example app on device and re-read the matching changelog.
 
+Use the repo [`.flutter-version`](../.flutter-version) (currently **3.47.4**) with FVM or your Flutter install so local builds match CI.
+
 | Component | Pinned in repo | Changelog / reference |
 | --- | --- | --- |
 | Flutter | 3.47+ (CI: 3.47.4) | https://docs.flutter.dev/release/release-notes |

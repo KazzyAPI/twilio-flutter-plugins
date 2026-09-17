@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Flutter stable (see [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md))
+- Flutter **3.47.4** (see [`.flutter-version`](.flutter-version) and [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md))
 - Xcode + CocoaPods (iOS)
 - Android SDK (API 21+)
 

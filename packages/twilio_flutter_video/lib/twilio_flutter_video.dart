@@ -1,5 +1,4 @@
-/// Twilio Video plugin (scaffold). Implementation will mirror [twilio_flutter_conversations].
-library twilio_flutter_video;
+library;
 
 export 'package:twilio_flutter_core/twilio_flutter_core.dart'
     show TwilioErrorCode, TwilioFlutterException;
