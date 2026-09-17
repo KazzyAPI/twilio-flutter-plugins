@@ -7,11 +7,11 @@ import 'package:twilio_flutter_conversations/src/pigeon/conversations.pigeon.dar
 class FakeTwilioConversationsHostApi extends TwilioConversationsHostApi {
   FakeTwilioConversationsHostApi({this.onConnect});
 
-  void Function(PigeonConnectRequest request)? onConnect;
+  void Function(ConnectRequest request)? onConnect;
   var connectCount = 0;
 
   @override
-  Future<void> connect(PigeonConnectRequest arg_request) async {
+  Future<void> connect(ConnectRequest arg_request) async {
     connectCount++;
     onConnect?.call(arg_request);
   }
@@ -23,29 +23,29 @@ class FakeTwilioConversationsHostApi extends TwilioConversationsHostApi {
   Future<void> updateAccessToken(String arg_accessToken) async {}
 
   @override
-  Future<PigeonMessageDto> sendMessage(
-    PigeonSendMessageRequest arg_request,
+  Future<MessageDto> sendMessage(
+    SendMessageRequest arg_request,
   ) async {
-    return PigeonMessageDto(
+    return MessageDto(
       sid: 'IMxxx',
       conversationSid: arg_request.conversationSid,
       author: 'test_user',
       body: arg_request.body,
       messageIndex: 1,
       dateCreatedEpochMs: DateTime.utc(2024, 1, 1).millisecondsSinceEpoch,
-      contentType: PigeonMessageContentType.text,
+      contentType: MessageContentType.text,
       attributesJson: arg_request.attributesJson,
     );
   }
 
   @override
-  Future<List<PigeonConversationDto>> listConversations() async => [];
+  Future<List<ConversationDto>> listConversations() async => [];
 
   @override
-  Future<PigeonConversationDto> getConversation(
+  Future<ConversationDto> getConversation(
     String arg_sidOrUniqueName,
   ) async {
-    return PigeonConversationDto(
+    return ConversationDto(
       sid: arg_sidOrUniqueName,
       uniqueName: '',
       friendlyName: '',
@@ -53,44 +53,44 @@ class FakeTwilioConversationsHostApi extends TwilioConversationsHostApi {
   }
 
   @override
-  Future<List<PigeonMessageDto>> getLastMessages(
-    PigeonGetMessagesRequest arg_request,
+  Future<List<MessageDto>> getLastMessages(
+    GetMessagesRequest arg_request,
   ) async =>
       [];
 
   @override
-  Future<List<PigeonParticipantDto>> getParticipants(
-    PigeonConversationRequest arg_request,
+  Future<List<ParticipantDto>> getParticipants(
+    ConversationRequest arg_request,
   ) async =>
       [];
 
   @override
-  Future<void> sendTyping(PigeonConversationRequest arg_request) async {}
+  Future<void> sendTyping(ConversationRequest arg_request) async {}
 
   @override
-  Future<List<PigeonMessageDto>> getMessagesBefore(
-    PigeonGetMessagesBeforeRequest arg_request,
+  Future<List<MessageDto>> getMessagesBefore(
+    GetMessagesBeforeRequest arg_request,
   ) async =>
       [];
 
   @override
-  Future<PigeonMessageDto> sendMediaMessage(
-    PigeonSendMediaMessageRequest arg_request,
+  Future<MessageDto> sendMediaMessage(
+    SendMediaMessageRequest arg_request,
   ) async {
-    return PigeonMessageDto(
+    return MessageDto(
       sid: 'IMmedia',
       conversationSid: arg_request.conversationSid,
       author: 'test_user',
       body: arg_request.caption ?? '',
       messageIndex: 2,
       dateCreatedEpochMs: DateTime.utc(2024, 1, 1).millisecondsSinceEpoch,
-      contentType: PigeonMessageContentType.media,
+      contentType: MessageContentType.media,
     );
   }
 
   @override
   Future<String> getMediaTemporaryUrl(
-    PigeonGetMediaTemporaryUrlRequest arg_request,
+    GetMediaTemporaryUrlRequest arg_request,
   ) async =>
       'https://example.com/media';
 }

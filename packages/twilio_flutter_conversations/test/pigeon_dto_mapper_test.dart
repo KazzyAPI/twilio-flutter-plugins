@@ -7,14 +7,14 @@ void main() {
 
   test('mapMessage decodes attributesJson', () {
     final message = mapper.mapMessage(
-      PigeonMessageDto(
+      MessageDto(
         sid: 'IMxxx',
         conversationSid: 'CHxxx',
         author: 'user',
         body: 'Hi',
         messageIndex: 1,
         dateCreatedEpochMs: 1700000000000,
-        contentType: PigeonMessageContentType.text,
+        contentType: MessageContentType.text,
         attributesJson: '{"orderId":"123","priority":"high"}',
       ),
     );

@@ -2,14 +2,14 @@ package com.twilioflutter.conversations.bridge
 
 import com.twilio.conversations.Media
 import com.twilio.conversations.Message
-import com.twilioflutter.conversations.pigeon.PigeonMediaAttachmentDto
-import com.twilioflutter.conversations.pigeon.PigeonMessageContentType
-import com.twilioflutter.conversations.pigeon.PigeonMessageDto
+import com.twilioflutter.conversations.pigeon.MediaAttachmentDto
+import com.twilioflutter.conversations.pigeon.MessageContentType
+import com.twilioflutter.conversations.pigeon.MessageDto
 
 /** Maps Twilio [Message] values including media attachments. */
 object MessageMediaMapping {
-  fun mapMedia(media: Media): PigeonMediaAttachmentDto {
-    return PigeonMediaAttachmentDto(
+  fun mapMedia(media: Media): MediaAttachmentDto {
+    return MediaAttachmentDto(
       sid = media.sid,
       contentType = media.contentType ?: "application/octet-stream",
       filename = media.filename ?: "",
@@ -18,22 +18,22 @@ object MessageMediaMapping {
   }
 
   fun enrichMessageDto(
-    base: PigeonMessageDto,
+    base: MessageDto,
     message: Message,
-  ): PigeonMessageDto {
+  ): MessageDto {
     val attachments =
       message.attachedMedia?.map { mapMedia(it) } ?: emptyList()
     if (attachments.isEmpty()) {
       return base
     }
-    return PigeonMessageDto(
+    return MessageDto(
       sid = base.sid,
       conversationSid = base.conversationSid,
       author = base.author,
       body = base.body,
       messageIndex = base.messageIndex,
       dateCreatedEpochMs = base.dateCreatedEpochMs,
-      contentType = PigeonMessageContentType.MEDIA,
+      contentType = MessageContentType.MEDIA,
       mediaAttachments = attachments,
       attributesJson = base.attributesJson,
     )

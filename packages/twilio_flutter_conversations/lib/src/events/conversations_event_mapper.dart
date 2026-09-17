@@ -16,68 +16,68 @@ class ConversationsEventMapper {
 
   final PigeonDtoMapper _dtoMapper;
 
-  TwilioConversationsEvent map(PigeonConversationsNativeEvent nativeEvent) {
+  TwilioConversationsEvent map(ConversationsNativeEvent nativeEvent) {
     switch (nativeEvent.type) {
-      case PigeonConversationsEventType.clientSynchronizationStatusUpdated:
+      case ConversationsEventType.clientSynchronizationStatusUpdated:
         return ClientSynchronizationStatusUpdated(
           nativeEvent.synchronizationStatus.toPublic(),
         );
-      case PigeonConversationsEventType.connectionStateChanged:
+      case ConversationsEventType.connectionStateChanged:
         return ClientConnectionStateChanged(
           nativeEvent.connectionState.toPublic(),
         );
-      case PigeonConversationsEventType.conversationAdded:
+      case ConversationsEventType.conversationAdded:
         return ConversationAdded(_requireConversation(nativeEvent));
-      case PigeonConversationsEventType.conversationUpdated:
+      case ConversationsEventType.conversationUpdated:
         return ConversationUpdated(
           _requireConversation(nativeEvent),
           nativeEvent.updateReason ?? '',
         );
-      case PigeonConversationsEventType.conversationDeleted:
+      case ConversationsEventType.conversationDeleted:
         return ConversationDeleted(_requireConversation(nativeEvent));
-      case PigeonConversationsEventType.conversationSynchronizationUpdated:
+      case ConversationsEventType.conversationSynchronizationUpdated:
         return ConversationSynchronizationUpdated(
           _requireConversation(nativeEvent),
           nativeEvent.conversationSyncStatus.toPublic(),
         );
-      case PigeonConversationsEventType.messageAdded:
+      case ConversationsEventType.messageAdded:
         return MessageAdded(_requireMessage(nativeEvent));
-      case PigeonConversationsEventType.messageUpdated:
+      case ConversationsEventType.messageUpdated:
         return MessageUpdated(
           _requireMessage(nativeEvent),
           nativeEvent.updateReason ?? '',
         );
-      case PigeonConversationsEventType.messageDeleted:
+      case ConversationsEventType.messageDeleted:
         return MessageDeleted(_requireMessage(nativeEvent));
-      case PigeonConversationsEventType.participantAdded:
+      case ConversationsEventType.participantAdded:
         return ParticipantAdded(_requireParticipant(nativeEvent));
-      case PigeonConversationsEventType.participantUpdated:
+      case ConversationsEventType.participantUpdated:
         return ParticipantUpdated(
           _requireParticipant(nativeEvent),
           nativeEvent.updateReason ?? '',
         );
-      case PigeonConversationsEventType.participantDeleted:
+      case ConversationsEventType.participantDeleted:
         return ParticipantDeleted(_requireParticipant(nativeEvent));
-      case PigeonConversationsEventType.typingStarted:
+      case ConversationsEventType.typingStarted:
         return TypingStarted(_requireParticipant(nativeEvent));
-      case PigeonConversationsEventType.typingEnded:
+      case ConversationsEventType.typingEnded:
         return TypingEnded(_requireParticipant(nativeEvent));
-      case PigeonConversationsEventType.userUpdated:
+      case ConversationsEventType.userUpdated:
         return UserUpdated(
           _requireUser(nativeEvent),
           nativeEvent.updateReason ?? '',
         );
-      case PigeonConversationsEventType.userSubscribed:
+      case ConversationsEventType.userSubscribed:
         return UserSubscribed(_requireUser(nativeEvent));
-      case PigeonConversationsEventType.userUnsubscribed:
+      case ConversationsEventType.userUnsubscribed:
         return UserUnsubscribed(_requireUser(nativeEvent));
-      case PigeonConversationsEventType.tokenAboutToExpire:
+      case ConversationsEventType.tokenAboutToExpire:
         return const TokenAboutToExpire();
-      case PigeonConversationsEventType.tokenExpired:
+      case ConversationsEventType.tokenExpired:
         return const TokenExpired();
-      case PigeonConversationsEventType.notificationSubscribed:
+      case ConversationsEventType.notificationSubscribed:
         return const NotificationSubscribed();
-      case PigeonConversationsEventType.error:
+      case ConversationsEventType.error:
         return ConversationsError(
           TwilioFlutterException.nativeError(
             errorCode: nativeEvent.errorCode,
@@ -87,7 +87,7 @@ class ConversationsEventMapper {
     }
   }
 
-  TwilioConversation _requireConversation(PigeonConversationsNativeEvent event) {
+  TwilioConversation _requireConversation(ConversationsNativeEvent event) {
     final conversation = event.conversation;
     if (conversation == null) {
       throw TwilioFlutterException.nativeError(
@@ -98,7 +98,7 @@ class ConversationsEventMapper {
     return _dtoMapper.mapConversation(conversation);
   }
 
-  TwilioMessage _requireMessage(PigeonConversationsNativeEvent event) {
+  TwilioMessage _requireMessage(ConversationsNativeEvent event) {
     final message = event.message;
     if (message == null) {
       throw TwilioFlutterException.nativeError(
@@ -109,7 +109,7 @@ class ConversationsEventMapper {
     return _dtoMapper.mapMessage(message);
   }
 
-  TwilioParticipant _requireParticipant(PigeonConversationsNativeEvent event) {
+  TwilioParticipant _requireParticipant(ConversationsNativeEvent event) {
     final participant = event.participant;
     if (participant == null) {
       throw TwilioFlutterException.nativeError(
@@ -120,7 +120,7 @@ class ConversationsEventMapper {
     return _dtoMapper.mapParticipant(participant);
   }
 
-  TwilioUser _requireUser(PigeonConversationsNativeEvent event) {
+  TwilioUser _requireUser(ConversationsNativeEvent event) {
     final user = event.user;
     if (user == null) {
       throw TwilioFlutterException.nativeError(

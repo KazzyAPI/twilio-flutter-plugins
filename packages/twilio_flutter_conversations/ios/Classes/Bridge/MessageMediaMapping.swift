@@ -2,8 +2,8 @@ import Foundation
 import TwilioConversationsClient
 
 enum MessageMediaMapping {
-  static func mapMedia(_ media: TCHMedia) -> PigeonMediaAttachmentDto {
-    return PigeonMediaAttachmentDto(
+  static func mapMedia(_ media: TCHMedia) -> MediaAttachmentDto {
+    return MediaAttachmentDto(
       sid: media.sid ?? "",
       contentType: media.contentType ?? "application/octet-stream",
       filename: media.filename ?? "",
@@ -12,21 +12,21 @@ enum MessageMediaMapping {
   }
 
   static func enrichMessageDto(
-    base: PigeonMessageDto,
+    base: MessageDto,
     message: TCHMessage
-  ) -> PigeonMessageDto {
+  ) -> MessageDto {
     guard let mediaItems = message.attachedMedia, !mediaItems.isEmpty else {
       return base
     }
 
-    let attachments = mediaItems.compactMap { item -> PigeonMediaAttachmentDto? in
+    let attachments = mediaItems.compactMap { item -> MediaAttachmentDto? in
       guard let media = item else {
         return nil
       }
       return mapMedia(media)
     }
 
-    return PigeonMessageDto(
+    return MessageDto(
       sid: base.sid,
       conversationSid: base.conversationSid,
       author: base.author,

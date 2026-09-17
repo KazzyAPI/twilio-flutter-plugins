@@ -1,5 +1,6 @@
 ## Unreleased
 
+* Toolchain: Flutter 3.47+, Dart 3.13+, Pigeon 29 (schema types renamed without `Pigeon` prefix; `TwilioConversationsFlutterApi.setUp`).
 * Full Conversations SDK listener surface forwarded to Dart (conversation, message, participant, typing, user, connection state).
 * Query APIs: `listConversations`, `getConversation`, `getLastMessages`, `getMessagesBefore`, `getParticipants`, `sendTyping`.
 * Media: `sendMediaMessage`, `getMediaTemporaryUrl`, `TwilioConversationsMediaPolicy`, `SendMediaMessageCommand`.

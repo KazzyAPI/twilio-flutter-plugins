@@ -5,7 +5,7 @@ import TwilioConversationsClient
 final class ConversationsEventMapper {
   func mapSynchronizationStatus(
     _ status: TCHClientSynchronizationStatus
-  ) -> PigeonClientSynchronizationStatus {
+  ) -> ClientSynchronizationStatus {
     switch status {
     case .started:
       return .started
@@ -20,7 +20,7 @@ final class ConversationsEventMapper {
     }
   }
 
-  func mapConnectionState(_ state: TCHClientConnectionState) -> PigeonClientConnectionState {
+  func mapConnectionState(_ state: TCHClientConnectionState) -> ClientConnectionState {
     switch state {
     case .connecting:
       return .connecting
@@ -41,7 +41,7 @@ final class ConversationsEventMapper {
 
   func mapConversationSynchronizationStatus(
     _ status: TCHConversationSynchronizationStatus
-  ) -> PigeonConversationSynchronizationStatus {
+  ) -> ConversationSynchronizationStatus {
     switch status {
     case .none:
       return .none
@@ -60,8 +60,8 @@ final class ConversationsEventMapper {
     }
   }
 
-  func mapConversation(_ conversation: TCHConversation) -> PigeonConversationDto {
-    return PigeonConversationDto(
+  func mapConversation(_ conversation: TCHConversation) -> ConversationDto {
+    return ConversationDto(
       sid: conversation.sid ?? "",
       uniqueName: conversation.uniqueName ?? "",
       friendlyName: conversation.friendlyName ?? "",
@@ -69,8 +69,8 @@ final class ConversationsEventMapper {
     )
   }
 
-  func mapMessage(_ message: TCHMessage, conversationSid: String) -> PigeonMessageDto {
-    let base = PigeonMessageDto(
+  func mapMessage(_ message: TCHMessage, conversationSid: String) -> MessageDto {
+    let base = MessageDto(
       sid: message.sid ?? "",
       conversationSid: conversationSid,
       author: message.author ?? "",
@@ -84,16 +84,16 @@ final class ConversationsEventMapper {
     return MessageMediaMapping.enrichMessageDto(base: base, message: message)
   }
 
-  func mapParticipant(_ participant: TCHParticipant, conversationSid: String) -> PigeonParticipantDto {
-    return PigeonParticipantDto(
+  func mapParticipant(_ participant: TCHParticipant, conversationSid: String) -> ParticipantDto {
+    return ParticipantDto(
       sid: participant.sid ?? "",
       identity: participant.identity ?? "",
       conversationSid: conversationSid
     )
   }
 
-  func mapUser(_ user: TCHUser) -> PigeonUserDto {
-    return PigeonUserDto(
+  func mapUser(_ user: TCHUser) -> UserDto {
+    return UserDto(
       identity: user.identity ?? "",
       friendlyName: user.friendlyName
     )
@@ -101,8 +101,8 @@ final class ConversationsEventMapper {
 
   func synchronizationEvent(
     status: TCHClientSynchronizationStatus
-  ) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  ) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .clientSynchronizationStatusUpdated,
       synchronizationStatus: mapSynchronizationStatus(status),
       connectionState: nil,
@@ -117,8 +117,8 @@ final class ConversationsEventMapper {
     )
   }
 
-  func connectionStateEvent(state: TCHClientConnectionState) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  func connectionStateEvent(state: TCHClientConnectionState) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .connectionStateChanged,
       synchronizationStatus: nil,
       connectionState: mapConnectionState(state),
@@ -133,8 +133,8 @@ final class ConversationsEventMapper {
     )
   }
 
-  func conversationAddedEvent(_ conversation: TCHConversation) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  func conversationAddedEvent(_ conversation: TCHConversation) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .conversationAdded,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -152,8 +152,8 @@ final class ConversationsEventMapper {
   func conversationUpdatedEvent(
     _ conversation: TCHConversation,
     reason: TCHConversationUpdateReason
-  ) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  ) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .conversationUpdated,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -168,8 +168,8 @@ final class ConversationsEventMapper {
     )
   }
 
-  func conversationDeletedEvent(_ conversation: TCHConversation) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  func conversationDeletedEvent(_ conversation: TCHConversation) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .conversationDeleted,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -186,8 +186,8 @@ final class ConversationsEventMapper {
 
   func conversationSynchronizationEvent(
     _ conversation: TCHConversation
-  ) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  ) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .conversationSynchronizationUpdated,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -207,8 +207,8 @@ final class ConversationsEventMapper {
   func messageAddedEvent(
     _ message: TCHMessage,
     conversationSid: String
-  ) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  ) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .messageAdded,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -227,8 +227,8 @@ final class ConversationsEventMapper {
     _ message: TCHMessage,
     conversationSid: String,
     reason: TCHMessageUpdateReason
-  ) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  ) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .messageUpdated,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -246,8 +246,8 @@ final class ConversationsEventMapper {
   func messageDeletedEvent(
     _ message: TCHMessage,
     conversationSid: String
-  ) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  ) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .messageDeleted,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -265,8 +265,8 @@ final class ConversationsEventMapper {
   func participantAddedEvent(
     _ participant: TCHParticipant,
     conversationSid: String
-  ) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  ) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .participantAdded,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -285,8 +285,8 @@ final class ConversationsEventMapper {
     _ participant: TCHParticipant,
     conversationSid: String,
     reason: TCHParticipantUpdateReason
-  ) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  ) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .participantUpdated,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -304,8 +304,8 @@ final class ConversationsEventMapper {
   func participantDeletedEvent(
     _ participant: TCHParticipant,
     conversationSid: String
-  ) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  ) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .participantDeleted,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -323,8 +323,8 @@ final class ConversationsEventMapper {
   func typingStartedEvent(
     _ participant: TCHParticipant,
     conversationSid: String
-  ) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  ) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .typingStarted,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -342,8 +342,8 @@ final class ConversationsEventMapper {
   func typingEndedEvent(
     _ participant: TCHParticipant,
     conversationSid: String
-  ) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  ) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .typingEnded,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -358,8 +358,8 @@ final class ConversationsEventMapper {
     )
   }
 
-  func userUpdatedEvent(_ user: TCHUser, reason: TCHUserUpdateReason) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  func userUpdatedEvent(_ user: TCHUser, reason: TCHUserUpdateReason) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .userUpdated,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -374,8 +374,8 @@ final class ConversationsEventMapper {
     )
   }
 
-  func userSubscribedEvent(_ user: TCHUser) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  func userSubscribedEvent(_ user: TCHUser) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .userSubscribed,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -390,8 +390,8 @@ final class ConversationsEventMapper {
     )
   }
 
-  func userUnsubscribedEvent(_ user: TCHUser) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  func userUnsubscribedEvent(_ user: TCHUser) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .userUnsubscribed,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -406,8 +406,8 @@ final class ConversationsEventMapper {
     )
   }
 
-  func tokenAboutToExpireEvent() -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  func tokenAboutToExpireEvent() -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .tokenAboutToExpire,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -422,8 +422,8 @@ final class ConversationsEventMapper {
     )
   }
 
-  func tokenExpiredEvent() -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  func tokenExpiredEvent() -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .tokenExpired,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -438,8 +438,8 @@ final class ConversationsEventMapper {
     )
   }
 
-  func notificationSubscribedEvent() -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  func notificationSubscribedEvent() -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .notificationSubscribed,
       synchronizationStatus: nil,
       connectionState: nil,
@@ -454,8 +454,8 @@ final class ConversationsEventMapper {
     )
   }
 
-  func errorEvent(code: String, message: String) -> PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
+  func errorEvent(code: String, message: String) -> ConversationsNativeEvent {
+    return ConversationsNativeEvent(
       type: .error,
       synchronizationStatus: nil,
       connectionState: nil,

@@ -8,7 +8,7 @@ final class ConversationsEventEmitter {
     flutterApi = TwilioConversationsFlutterApi(binaryMessenger: binaryMessenger)
   }
 
-  func emit(event: PigeonConversationsNativeEvent) {
+  func emit(event: ConversationsNativeEvent) {
     flutterApi.onNativeEvent(event: event) { _ in }
   }
 }

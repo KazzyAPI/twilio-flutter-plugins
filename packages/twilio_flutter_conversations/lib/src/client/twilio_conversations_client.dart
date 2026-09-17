@@ -107,7 +107,7 @@ class TwilioConversationsClient {
     _connectionState = TwilioConversationsConnectionState.connecting;
     try {
       await _hostApi.connect(
-        PigeonConnectRequest(accessToken: accessToken),
+        ConnectRequest(accessToken: accessToken),
       );
       if (_connectionState == TwilioConversationsConnectionState.disposed) {
         return;
@@ -198,7 +198,7 @@ class TwilioConversationsClient {
     _assertConnectedForMutation('sendMessage');
     try {
       final dto = await _hostApi.sendMessage(
-        PigeonSendMessageRequest(
+        SendMessageRequest(
           conversationSid: command.conversationSid,
           body: command.body,
           attributesJson: TwilioJsonObjectCodec.encode(command.attributes),
@@ -218,7 +218,7 @@ class TwilioConversationsClient {
     try {
       final dtos = await _hostApi.listConversations();
       return dtos
-          .whereType<PigeonConversationDto>()
+          .whereType<ConversationDto>()
           .map(_dtoMapper.mapConversation)
           .toList(growable: false);
     } on PlatformException catch (error) {
@@ -246,14 +246,14 @@ class TwilioConversationsClient {
     _assertConnectedForMutation('getMessagesBefore');
     try {
       final dtos = await _hostApi.getMessagesBefore(
-        PigeonGetMessagesBeforeRequest(
+        GetMessagesBeforeRequest(
           conversationSid: conversationSid,
           beforeMessageIndex: beforeMessageIndex,
           count: count,
         ),
       );
       return dtos
-          .whereType<PigeonMessageDto>()
+          .whereType<MessageDto>()
           .map(_dtoMapper.mapMessage)
           .toList(growable: false);
     } on PlatformException catch (error) {
@@ -280,7 +280,7 @@ class TwilioConversationsClient {
     );
     try {
       final dto = await _hostApi.sendMediaMessage(
-        PigeonSendMediaMessageRequest(
+        SendMediaMessageRequest(
           conversationSid: command.conversationSid,
           filePath: command.filePath,
           mimeType: command.mimeType,
@@ -304,7 +304,7 @@ class TwilioConversationsClient {
     _assertConnectedForMutation('getMediaTemporaryUrl');
     try {
       return await _hostApi.getMediaTemporaryUrl(
-        PigeonGetMediaTemporaryUrlRequest(
+        GetMediaTemporaryUrlRequest(
           conversationSid: conversationSid,
           messageIndex: messageIndex,
           mediaSid: mediaSid,
@@ -323,13 +323,13 @@ class TwilioConversationsClient {
     _assertConnectedForMutation('getLastMessages');
     try {
       final dtos = await _hostApi.getLastMessages(
-        PigeonGetMessagesRequest(
+        GetMessagesRequest(
           conversationSid: conversationSid,
           count: count,
         ),
       );
       return dtos
-          .whereType<PigeonMessageDto>()
+          .whereType<MessageDto>()
           .map(_dtoMapper.mapMessage)
           .toList(growable: false);
     } on PlatformException catch (error) {
@@ -342,10 +342,10 @@ class TwilioConversationsClient {
     _assertConnectedForMutation('getParticipants');
     try {
       final dtos = await _hostApi.getParticipants(
-        PigeonConversationRequest(conversationSid: conversationSid),
+        ConversationRequest(conversationSid: conversationSid),
       );
       return dtos
-          .whereType<PigeonParticipantDto>()
+          .whereType<ParticipantDto>()
           .map(_dtoMapper.mapParticipant)
           .toList(growable: false);
     } on PlatformException catch (error) {
@@ -358,7 +358,7 @@ class TwilioConversationsClient {
     _assertConnectedForMutation('sendTyping');
     try {
       await _hostApi.sendTyping(
-        PigeonConversationRequest(conversationSid: conversationSid),
+        ConversationRequest(conversationSid: conversationSid),
       );
     } on PlatformException catch (error) {
       throw _exceptionMapper.map(error);
@@ -389,7 +389,7 @@ class TwilioConversationsClient {
       }
     }
 
-    TwilioConversationsFlutterApi.setup(null);
+    TwilioConversationsFlutterApi.setUp(null);
     _flutterApiRegistered = false;
     TwilioConversationsClientRegistry.detach(this);
     await _eventController.close();
@@ -399,7 +399,7 @@ class TwilioConversationsClient {
     if (_flutterApiRegistered) {
       return;
     }
-    TwilioConversationsFlutterApi.setup(
+    TwilioConversationsFlutterApi.setUp(
       _TwilioConversationsFlutterHandler(
         eventMapper: _eventMapper,
         eventController: _eventController,
@@ -460,7 +460,7 @@ class TwilioConversationsClient {
 
   /// Feeds a native event through the same path as the platform channel (tests).
   @visibleForTesting
-  void ingestNativeEventForTesting(PigeonConversationsNativeEvent event) {
+  void ingestNativeEventForTesting(ConversationsNativeEvent event) {
     _registerFlutterApi();
     if (_eventController.isClosed) {
       return;
@@ -491,7 +491,7 @@ class _TwilioConversationsFlutterHandler implements TwilioConversationsFlutterAp
   final void Function(TwilioClientConnectionState state) _onSdkConnectionState;
 
   @override
-  void onNativeEvent(PigeonConversationsNativeEvent event) {
+  void onNativeEvent(ConversationsNativeEvent event) {
     if (_eventController.isClosed) {
       return;
     }

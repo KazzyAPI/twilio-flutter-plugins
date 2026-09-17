@@ -37,6 +37,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.47.4'
           cache: true
 
       - name: Install core dependencies
@@ -87,6 +88,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.47.4'
           cache: true
 
       - name: Prepare example Android project
@@ -94,7 +96,9 @@ jobs:
         working-directory: packages/twilio_flutter_conversations/example
 
       - name: Run Android unit tests (plugin)
-        run: ./gradlew :twilio_flutter_conversations:testDebugUnitTest --no-daemon
+        run: |
+          chmod +x ./gradlew
+          ./gradlew :twilio_flutter_conversations:testDebugUnitTest --no-daemon --stacktrace
         working-directory: packages/twilio_flutter_conversations/example/android
 
   ios-build:
@@ -107,6 +111,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.47.4'
           cache: true
 
       - name: Prepare example

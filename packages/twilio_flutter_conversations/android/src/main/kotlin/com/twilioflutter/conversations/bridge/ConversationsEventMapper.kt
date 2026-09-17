@@ -5,77 +5,77 @@ import com.twilio.conversations.ConversationsClient
 import com.twilio.conversations.Message
 import com.twilio.conversations.Participant
 import com.twilio.conversations.User
-import com.twilioflutter.conversations.pigeon.PigeonClientConnectionState
-import com.twilioflutter.conversations.pigeon.PigeonClientSynchronizationStatus
-import com.twilioflutter.conversations.pigeon.PigeonConversationDto
-import com.twilioflutter.conversations.pigeon.PigeonConversationSynchronizationStatus
-import com.twilioflutter.conversations.pigeon.PigeonConversationsEventType
-import com.twilioflutter.conversations.pigeon.PigeonConversationsNativeEvent
-import com.twilioflutter.conversations.pigeon.PigeonMessageDto
-import com.twilioflutter.conversations.pigeon.PigeonParticipantDto
-import com.twilioflutter.conversations.pigeon.PigeonUserDto
+import com.twilioflutter.conversations.pigeon.ClientConnectionState
+import com.twilioflutter.conversations.pigeon.ClientSynchronizationStatus
+import com.twilioflutter.conversations.pigeon.ConversationDto
+import com.twilioflutter.conversations.pigeon.ConversationSynchronizationStatus
+import com.twilioflutter.conversations.pigeon.ConversationsEventType
+import com.twilioflutter.conversations.pigeon.ConversationsNativeEvent
+import com.twilioflutter.conversations.pigeon.MessageDto
+import com.twilioflutter.conversations.pigeon.ParticipantDto
+import com.twilioflutter.conversations.pigeon.UserDto
 
 /** Maps Twilio Conversations SDK models to pigeon DTOs. */
 class ConversationsEventMapper {
   fun mapSynchronizationStatus(
     status: ConversationsClient.SynchronizationStatus,
-  ): PigeonClientSynchronizationStatus {
+  ): ClientSynchronizationStatus {
     return when (status) {
       ConversationsClient.SynchronizationStatus.NONE,
       ConversationsClient.SynchronizationStatus.IDENTITIES,
-      -> PigeonClientSynchronizationStatus.STARTED
+      -> ClientSynchronizationStatus.STARTED
       ConversationsClient.SynchronizationStatus.CONVERSATIONS ->
-        PigeonClientSynchronizationStatus.CONVERSATIONSLISTCOMPLETED
+        ClientSynchronizationStatus.CONVERSATIONSLISTCOMPLETED
       ConversationsClient.SynchronizationStatus.COMPLETED ->
-        PigeonClientSynchronizationStatus.COMPLETED
+        ClientSynchronizationStatus.COMPLETED
       ConversationsClient.SynchronizationStatus.FAILED ->
-        PigeonClientSynchronizationStatus.FAILED
-      else -> PigeonClientSynchronizationStatus.UNKNOWN
+        ClientSynchronizationStatus.FAILED
+      else -> ClientSynchronizationStatus.UNKNOWN
     }
   }
 
   fun mapConnectionState(
     state: ConversationsClient.ConnectionState,
-  ): PigeonClientConnectionState {
+  ): ClientConnectionState {
     return when (state) {
       ConversationsClient.ConnectionState.CONNECTING ->
-        PigeonClientConnectionState.CONNECTING
+        ClientConnectionState.CONNECTING
       ConversationsClient.ConnectionState.CONNECTED ->
-        PigeonClientConnectionState.CONNECTED
+        ClientConnectionState.CONNECTED
       ConversationsClient.ConnectionState.DISCONNECTED ->
-        PigeonClientConnectionState.DISCONNECTED
+        ClientConnectionState.DISCONNECTED
       ConversationsClient.ConnectionState.DENIED ->
-        PigeonClientConnectionState.DENIED
+        ClientConnectionState.DENIED
       ConversationsClient.ConnectionState.ERROR ->
-        PigeonClientConnectionState.ERROR
+        ClientConnectionState.ERROR
       ConversationsClient.ConnectionState.FATAL ->
-        PigeonClientConnectionState.FATAL
-      else -> PigeonClientConnectionState.UNKNOWN
+        ClientConnectionState.FATAL
+      else -> ClientConnectionState.UNKNOWN
     }
   }
 
   fun mapConversationSynchronizationStatus(
     conversation: Conversation,
-  ): PigeonConversationSynchronizationStatus {
+  ): ConversationSynchronizationStatus {
     return when (conversation.synchronizationStatus) {
       Conversation.SynchronizationStatus.NONE ->
-        PigeonConversationSynchronizationStatus.NONE
+        ConversationSynchronizationStatus.NONE
       Conversation.SynchronizationStatus.IDENTIFIER ->
-        PigeonConversationSynchronizationStatus.IDENTIFIER
+        ConversationSynchronizationStatus.IDENTIFIER
       Conversation.SynchronizationStatus.METADATA ->
-        PigeonConversationSynchronizationStatus.METADATA
+        ConversationSynchronizationStatus.METADATA
       Conversation.SynchronizationStatus.SYNCWINDOW ->
-        PigeonConversationSynchronizationStatus.SYNCWINDOW
+        ConversationSynchronizationStatus.SYNCWINDOW
       Conversation.SynchronizationStatus.ALL ->
-        PigeonConversationSynchronizationStatus.ALL
+        ConversationSynchronizationStatus.ALL
       Conversation.SynchronizationStatus.FAILED ->
-        PigeonConversationSynchronizationStatus.FAILED
-      else -> PigeonConversationSynchronizationStatus.UNKNOWN
+        ConversationSynchronizationStatus.FAILED
+      else -> ConversationSynchronizationStatus.UNKNOWN
     }
   }
 
-  fun mapConversation(conversation: Conversation): PigeonConversationDto {
-    return PigeonConversationDto(
+  fun mapConversation(conversation: Conversation): ConversationDto {
+    return ConversationDto(
       sid = conversation.sid,
       uniqueName = conversation.uniqueName ?: "",
       friendlyName = conversation.friendlyName ?: "",
@@ -83,9 +83,9 @@ class ConversationsEventMapper {
     )
   }
 
-  fun mapMessage(message: Message, conversationSid: String): PigeonMessageDto {
+  fun mapMessage(message: Message, conversationSid: String): MessageDto {
     val base =
-      PigeonMessageDto(
+      MessageDto(
         sid = message.sid,
         conversationSid = conversationSid,
         author = message.author ?: "",
@@ -97,16 +97,16 @@ class ConversationsEventMapper {
     return MessageMediaMapping.enrichMessageDto(base, message)
   }
 
-  fun mapParticipant(participant: Participant, conversationSid: String): PigeonParticipantDto {
-    return PigeonParticipantDto(
+  fun mapParticipant(participant: Participant, conversationSid: String): ParticipantDto {
+    return ParticipantDto(
       sid = participant.sid,
       identity = participant.identity ?: "",
       conversationSid = conversationSid,
     )
   }
 
-  fun mapUser(user: User): PigeonUserDto {
-    return PigeonUserDto(
+  fun mapUser(user: User): UserDto {
+    return UserDto(
       identity = user.identity ?: "",
       friendlyName = user.friendlyName,
     )
@@ -114,25 +114,25 @@ class ConversationsEventMapper {
 
   fun synchronizationEvent(
     status: ConversationsClient.SynchronizationStatus,
-  ): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.CLIENTSYNCHRONIZATIONSTATUSUPDATED,
+  ): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.CLIENTSYNCHRONIZATIONSTATUSUPDATED,
       synchronizationStatus = mapSynchronizationStatus(status),
     )
   }
 
   fun connectionStateEvent(
     state: ConversationsClient.ConnectionState,
-  ): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.CONNECTIONSTATECHANGED,
+  ): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.CONNECTIONSTATECHANGED,
       connectionState = mapConnectionState(state),
     )
   }
 
-  fun conversationAddedEvent(conversation: Conversation): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.CONVERSATIONADDED,
+  fun conversationAddedEvent(conversation: Conversation): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.CONVERSATIONADDED,
       conversation = mapConversation(conversation),
     )
   }
@@ -140,34 +140,34 @@ class ConversationsEventMapper {
   fun conversationUpdatedEvent(
     conversation: Conversation,
     reason: Conversation.UpdateReason,
-  ): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.CONVERSATIONUPDATED,
+  ): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.CONVERSATIONUPDATED,
       conversation = mapConversation(conversation),
       updateReason = reason.name,
     )
   }
 
-  fun conversationDeletedEvent(conversation: Conversation): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.CONVERSATIONDELETED,
+  fun conversationDeletedEvent(conversation: Conversation): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.CONVERSATIONDELETED,
       conversation = mapConversation(conversation),
     )
   }
 
   fun conversationSynchronizationEvent(
     conversation: Conversation,
-  ): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.CONVERSATIONSYNCHRONIZATIONUPDATED,
+  ): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.CONVERSATIONSYNCHRONIZATIONUPDATED,
       conversation = mapConversation(conversation),
       conversationSyncStatus = mapConversationSynchronizationStatus(conversation),
     )
   }
 
-  fun messageAddedEvent(message: Message, conversationSid: String): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.MESSAGEADDED,
+  fun messageAddedEvent(message: Message, conversationSid: String): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.MESSAGEADDED,
       message = mapMessage(message, conversationSid),
     )
   }
@@ -176,9 +176,9 @@ class ConversationsEventMapper {
     message: Message,
     conversationSid: String,
     reason: Message.UpdateReason,
-  ): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.MESSAGEUPDATED,
+  ): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.MESSAGEUPDATED,
       message = mapMessage(message, conversationSid),
       updateReason = reason.name,
     )
@@ -187,9 +187,9 @@ class ConversationsEventMapper {
   fun messageDeletedEvent(
     message: Message,
     conversationSid: String,
-  ): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.MESSAGEDELETED,
+  ): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.MESSAGEDELETED,
       message = mapMessage(message, conversationSid),
     )
   }
@@ -197,9 +197,9 @@ class ConversationsEventMapper {
   fun participantAddedEvent(
     participant: Participant,
     conversationSid: String,
-  ): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.PARTICIPANTADDED,
+  ): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.PARTICIPANTADDED,
       participant = mapParticipant(participant, conversationSid),
     )
   }
@@ -208,9 +208,9 @@ class ConversationsEventMapper {
     participant: Participant,
     conversationSid: String,
     reason: Participant.UpdateReason,
-  ): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.PARTICIPANTUPDATED,
+  ): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.PARTICIPANTUPDATED,
       participant = mapParticipant(participant, conversationSid),
       updateReason = reason.name,
     )
@@ -219,9 +219,9 @@ class ConversationsEventMapper {
   fun participantDeletedEvent(
     participant: Participant,
     conversationSid: String,
-  ): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.PARTICIPANTDELETED,
+  ): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.PARTICIPANTDELETED,
       participant = mapParticipant(participant, conversationSid),
     )
   }
@@ -229,9 +229,9 @@ class ConversationsEventMapper {
   fun typingStartedEvent(
     participant: Participant,
     conversationSid: String,
-  ): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.TYPINGSTARTED,
+  ): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.TYPINGSTARTED,
       participant = mapParticipant(participant, conversationSid),
     )
   }
@@ -239,56 +239,56 @@ class ConversationsEventMapper {
   fun typingEndedEvent(
     participant: Participant,
     conversationSid: String,
-  ): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.TYPINGENDED,
+  ): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.TYPINGENDED,
       participant = mapParticipant(participant, conversationSid),
     )
   }
 
-  fun userUpdatedEvent(user: User, reason: User.UpdateReason): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.USERUPDATED,
+  fun userUpdatedEvent(user: User, reason: User.UpdateReason): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.USERUPDATED,
       user = mapUser(user),
       updateReason = reason.name,
     )
   }
 
-  fun userSubscribedEvent(user: User): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.USERSUBSCRIBED,
+  fun userSubscribedEvent(user: User): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.USERSUBSCRIBED,
       user = mapUser(user),
     )
   }
 
-  fun userUnsubscribedEvent(user: User): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.USERUNSUBSCRIBED,
+  fun userUnsubscribedEvent(user: User): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.USERUNSUBSCRIBED,
       user = mapUser(user),
     )
   }
 
-  fun tokenAboutToExpireEvent(): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.TOKENABOUTTOEXPIRE,
+  fun tokenAboutToExpireEvent(): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.TOKENABOUTTOEXPIRE,
     )
   }
 
-  fun tokenExpiredEvent(): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.TOKENEXPIRED,
+  fun tokenExpiredEvent(): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.TOKENEXPIRED,
     )
   }
 
-  fun notificationSubscribedEvent(): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.NOTIFICATIONSUBSCRIBED,
+  fun notificationSubscribedEvent(): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.NOTIFICATIONSUBSCRIBED,
     )
   }
 
-  fun errorEvent(code: String, message: String): PigeonConversationsNativeEvent {
-    return PigeonConversationsNativeEvent(
-      type = PigeonConversationsEventType.ERROR,
+  fun errorEvent(code: String, message: String): ConversationsNativeEvent {
+    return ConversationsNativeEvent(
+      type = ConversationsEventType.ERROR,
       errorCode = code,
       errorMessage = message,
     )

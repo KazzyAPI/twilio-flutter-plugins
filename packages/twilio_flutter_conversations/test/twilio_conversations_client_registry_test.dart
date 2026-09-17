@@ -7,7 +7,7 @@ import 'package:twilio_flutter_core/twilio_flutter_core.dart';
 
 class _NoopHost extends TwilioConversationsHostApi {
   @override
-  Future<void> connect(PigeonConnectRequest arg_request) async {}
+  Future<void> connect(ConnectRequest arg_request) async {}
 
   @override
   Future<void> disconnect() async {}
@@ -16,55 +16,55 @@ class _NoopHost extends TwilioConversationsHostApi {
   Future<void> updateAccessToken(String arg_accessToken) async {}
 
   @override
-  Future<PigeonMessageDto> sendMessage(
-    PigeonSendMessageRequest arg_request,
+  Future<MessageDto> sendMessage(
+    SendMessageRequest arg_request,
   ) async {
     throw UnimplementedError();
   }
 
   @override
-  Future<List<PigeonConversationDto>> listConversations() async => [];
+  Future<List<ConversationDto>> listConversations() async => [];
 
   @override
-  Future<PigeonConversationDto> getConversation(
+  Future<ConversationDto> getConversation(
     String arg_sidOrUniqueName,
   ) async {
     throw UnimplementedError();
   }
 
   @override
-  Future<List<PigeonMessageDto>> getLastMessages(
-    PigeonGetMessagesRequest arg_request,
+  Future<List<MessageDto>> getLastMessages(
+    GetMessagesRequest arg_request,
   ) async =>
       [];
 
   @override
-  Future<List<PigeonMessageDto>> getMessagesBefore(
-    PigeonGetMessagesBeforeRequest arg_request,
+  Future<List<MessageDto>> getMessagesBefore(
+    GetMessagesBeforeRequest arg_request,
   ) async =>
       [];
 
   @override
-  Future<PigeonMessageDto> sendMediaMessage(
-    PigeonSendMediaMessageRequest arg_request,
+  Future<MessageDto> sendMediaMessage(
+    SendMediaMessageRequest arg_request,
   ) async {
     throw UnimplementedError();
   }
 
   @override
   Future<String> getMediaTemporaryUrl(
-    PigeonGetMediaTemporaryUrlRequest arg_request,
+    GetMediaTemporaryUrlRequest arg_request,
   ) async =>
       '';
 
   @override
-  Future<List<PigeonParticipantDto>> getParticipants(
-    PigeonConversationRequest arg_request,
+  Future<List<ParticipantDto>> getParticipants(
+    ConversationRequest arg_request,
   ) async =>
       [];
 
   @override
-  Future<void> sendTyping(PigeonConversationRequest arg_request) async {}
+  Future<void> sendTyping(ConversationRequest arg_request) async {}
 }
 
 void main() {

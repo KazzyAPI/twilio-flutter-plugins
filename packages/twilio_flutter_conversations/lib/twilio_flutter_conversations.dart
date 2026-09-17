@@ -1,5 +1,4 @@
-/// Typed Flutter wrapper for the Twilio Conversations SDK.
-library twilio_flutter_conversations;
+library;
 
 export 'package:twilio_flutter_core/twilio_flutter_core.dart'
     show

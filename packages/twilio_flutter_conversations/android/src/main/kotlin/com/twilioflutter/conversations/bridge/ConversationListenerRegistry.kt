@@ -4,12 +4,12 @@ import com.twilio.conversations.Conversation
 import com.twilio.conversations.ConversationListener
 import com.twilio.conversations.Message
 import com.twilio.conversations.Participant
-import com.twilioflutter.conversations.pigeon.PigeonConversationsNativeEvent
+import com.twilioflutter.conversations.pigeon.ConversationsNativeEvent
 
 /** Retains and removes per-conversation SDK listeners. */
 class ConversationListenerRegistry(
   private val eventMapper: ConversationsEventMapper,
-  private val emit: (PigeonConversationsNativeEvent) -> Unit,
+  private val emit: (ConversationsNativeEvent) -> Unit,
 ) {
   private val listeners = linkedMapOf<String, ConversationListener>()
 

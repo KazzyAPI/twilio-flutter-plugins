@@ -2,8 +2,8 @@
 
 ## Tech stack
 
-- Flutter 3.16+, Dart 3.2+
-- Pigeon 11.x for platform channel types
+- Flutter 3.47+, Dart 3.13+
+- Pigeon 29.x for platform channel types
 - Twilio Conversations Android 6.2.1, iOS pod ~> 4.0
 - GitHub Spec Kit (`.specify/`, `specs/`, `.cursor/commands/speckit.*`)
 

@@ -9,19 +9,19 @@ import com.twilio.conversations.ErrorInfo
 import com.twilio.conversations.Message
 import com.twilio.conversations.StatusListener
 import com.twilioflutter.conversations.pigeon.FlutterError
-import com.twilioflutter.conversations.pigeon.PigeonConnectRequest
-import com.twilioflutter.conversations.pigeon.PigeonConversationDto
-import com.twilioflutter.conversations.pigeon.PigeonConversationRequest
-import com.twilioflutter.conversations.pigeon.PigeonGetMediaTemporaryUrlRequest
-import com.twilioflutter.conversations.pigeon.PigeonGetMessagesBeforeRequest
-import com.twilioflutter.conversations.pigeon.PigeonGetMessagesRequest
-import com.twilioflutter.conversations.pigeon.PigeonSendMediaMessageRequest
+import com.twilioflutter.conversations.pigeon.ConnectRequest
+import com.twilioflutter.conversations.pigeon.ConversationDto
+import com.twilioflutter.conversations.pigeon.ConversationRequest
+import com.twilioflutter.conversations.pigeon.GetMediaTemporaryUrlRequest
+import com.twilioflutter.conversations.pigeon.GetMessagesBeforeRequest
+import com.twilioflutter.conversations.pigeon.GetMessagesRequest
+import com.twilioflutter.conversations.pigeon.SendMediaMessageRequest
 import com.twilio.conversations.MediaUploadListener
 import java.io.File
 import java.io.FileInputStream
-import com.twilioflutter.conversations.pigeon.PigeonMessageDto
-import com.twilioflutter.conversations.pigeon.PigeonParticipantDto
-import com.twilioflutter.conversations.pigeon.PigeonSendMessageRequest
+import com.twilioflutter.conversations.pigeon.MessageDto
+import com.twilioflutter.conversations.pigeon.ParticipantDto
+import com.twilioflutter.conversations.pigeon.SendMessageRequest
 import com.twilioflutter.conversations.pigeon.TwilioConversationsHostApi
 import io.flutter.plugin.common.BinaryMessenger
 
@@ -122,7 +122,7 @@ class ConversationsBridge(
       }
     }
 
-  override fun connect(request: PigeonConnectRequest, callback: (Result<Unit>) -> Unit) {
+  override fun connect(request: ConnectRequest, callback: (Result<Unit>) -> Unit) {
     if (client != null || connectSessionGuard.isConnectInFlight()) {
       callback(
         Result.failure(
@@ -243,7 +243,7 @@ class ConversationsBridge(
     )
   }
 
-  override fun listConversations(callback: (Result<List<PigeonConversationDto>>) -> Unit) {
+  override fun listConversations(callback: (Result<List<ConversationDto>>) -> Unit) {
     val activeClient = client
     if (activeClient == null) {
       callback(
@@ -269,7 +269,7 @@ class ConversationsBridge(
 
   override fun getConversation(
     sidOrUniqueName: String,
-    callback: (Result<PigeonConversationDto>) -> Unit,
+    callback: (Result<ConversationDto>) -> Unit,
   ) {
     resolveConversation(
       sidOrUniqueName,
@@ -281,8 +281,8 @@ class ConversationsBridge(
   }
 
   override fun getLastMessages(
-    request: PigeonGetMessagesRequest,
-    callback: (Result<List<PigeonMessageDto>>) -> Unit,
+    request: GetMessagesRequest,
+    callback: (Result<List<MessageDto>>) -> Unit,
   ) {
     val count = request.count.coerceIn(1, 100)
     resolveConversation(
@@ -320,8 +320,8 @@ class ConversationsBridge(
   }
 
   override fun getMessagesBefore(
-    request: PigeonGetMessagesBeforeRequest,
-    callback: (Result<List<PigeonMessageDto>>) -> Unit,
+    request: GetMessagesBeforeRequest,
+    callback: (Result<List<MessageDto>>) -> Unit,
   ) {
     val count = request.count.coerceIn(1, 100)
     resolveConversation(
@@ -360,8 +360,8 @@ class ConversationsBridge(
   }
 
   override fun sendMediaMessage(
-    request: PigeonSendMediaMessageRequest,
-    callback: (Result<PigeonMessageDto>) -> Unit,
+    request: SendMediaMessageRequest,
+    callback: (Result<MessageDto>) -> Unit,
   ) {
     resolveConversation(
       request.conversationSid,
@@ -465,7 +465,7 @@ class ConversationsBridge(
   }
 
   override fun getMediaTemporaryUrl(
-    request: PigeonGetMediaTemporaryUrlRequest,
+    request: GetMediaTemporaryUrlRequest,
     callback: (Result<String>) -> Unit,
   ) {
     resolveConversation(
@@ -532,8 +532,8 @@ class ConversationsBridge(
   }
 
   override fun getParticipants(
-    request: PigeonConversationRequest,
-    callback: (Result<List<PigeonParticipantDto>>) -> Unit,
+    request: ConversationRequest,
+    callback: (Result<List<ParticipantDto>>) -> Unit,
   ) {
     resolveConversation(
       request.conversationSid,
@@ -551,7 +551,7 @@ class ConversationsBridge(
   }
 
   override fun sendTyping(
-    request: PigeonConversationRequest,
+    request: ConversationRequest,
     callback: (Result<Unit>) -> Unit,
   ) {
     resolveConversation(
@@ -565,8 +565,8 @@ class ConversationsBridge(
   }
 
   override fun sendMessage(
-    request: PigeonSendMessageRequest,
-    callback: (Result<PigeonMessageDto>) -> Unit,
+    request: SendMessageRequest,
+    callback: (Result<MessageDto>) -> Unit,
   ) {
     val activeClient = client
     if (activeClient == null) {

@@ -12,7 +12,7 @@ import '../pigeon/conversations.pigeon.dart';
 class PigeonDtoMapper {
   const PigeonDtoMapper();
 
-  TwilioConversation mapConversation(PigeonConversationDto dto) {
+  TwilioConversation mapConversation(ConversationDto dto) {
     return TwilioConversation(
       sid: dto.sid,
       uniqueName: dto.uniqueName,
@@ -21,10 +21,10 @@ class PigeonDtoMapper {
     );
   }
 
-  TwilioMessage mapMessage(PigeonMessageDto dto) {
+  TwilioMessage mapMessage(MessageDto dto) {
     final attachments =
         dto.mediaAttachments
-            ?.whereType<PigeonMediaAttachmentDto>()
+            ?.whereType<MediaAttachmentDto>()
             .map(
               (media) => TwilioMediaAttachment(
                 sid: media.sid,
@@ -48,7 +48,7 @@ class PigeonDtoMapper {
     );
   }
 
-  TwilioParticipant mapParticipant(PigeonParticipantDto dto) {
+  TwilioParticipant mapParticipant(ParticipantDto dto) {
     return TwilioParticipant(
       sid: dto.sid,
       identity: dto.identity,
@@ -56,7 +56,7 @@ class PigeonDtoMapper {
     );
   }
 
-  TwilioUser mapUser(PigeonUserDto dto) {
+  TwilioUser mapUser(UserDto dto) {
     return TwilioUser(
       identity: dto.identity,
       friendlyName: dto.friendlyName ?? '',

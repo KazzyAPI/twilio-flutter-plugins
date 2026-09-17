@@ -18,7 +18,7 @@ void main() {
 
   group('TwilioConversationsClient', () {
     test('connect forwards access token to host api', () async {
-      PigeonConnectRequest? capturedRequest;
+      ConnectRequest? capturedRequest;
       final client = TwilioConversationsClient(
         registerSingleton: false,
         hostApi: FakeConversationsHostApi(
@@ -91,9 +91,9 @@ void main() {
       );
       await client.connect(accessToken: 'jwt');
       client.ingestNativeEventForTesting(
-        PigeonConversationsNativeEvent(
-          type: PigeonConversationsEventType.connectionStateChanged,
-          connectionState: PigeonClientConnectionState.disconnected,
+        ConversationsNativeEvent(
+          type: ConversationsEventType.connectionStateChanged,
+          connectionState: ClientConnectionState.disconnected,
         ),
       );
       await Future<void>.delayed(Duration.zero);
@@ -115,15 +115,15 @@ void main() {
       );
       await client.connect(accessToken: 'jwt');
       client.ingestNativeEventForTesting(
-        PigeonConversationsNativeEvent(
-          type: PigeonConversationsEventType.connectionStateChanged,
-          connectionState: PigeonClientConnectionState.disconnected,
+        ConversationsNativeEvent(
+          type: ConversationsEventType.connectionStateChanged,
+          connectionState: ClientConnectionState.disconnected,
         ),
       );
       client.ingestNativeEventForTesting(
-        PigeonConversationsNativeEvent(
-          type: PigeonConversationsEventType.connectionStateChanged,
-          connectionState: PigeonClientConnectionState.connecting,
+        ConversationsNativeEvent(
+          type: ConversationsEventType.connectionStateChanged,
+          connectionState: ClientConnectionState.connecting,
         ),
       );
       await Future<void>.delayed(Duration.zero);
@@ -207,7 +207,7 @@ void main() {
 
 class _ThrowingHostApi extends TwilioConversationsHostApi {
   @override
-  Future<void> connect(PigeonConnectRequest arg_request) {
+  Future<void> connect(ConnectRequest arg_request) {
     throw PlatformException(code: 'sdk_failure', message: 'Rejected');
   }
 
@@ -218,59 +218,59 @@ class _ThrowingHostApi extends TwilioConversationsHostApi {
   Future<void> updateAccessToken(String arg_accessToken) async {}
 
   @override
-  Future<PigeonMessageDto> sendMessage(
-    PigeonSendMessageRequest arg_request,
+  Future<MessageDto> sendMessage(
+    SendMessageRequest arg_request,
   ) async {
     throw UnimplementedError();
   }
 
   @override
-  Future<List<PigeonConversationDto>> listConversations() async => [];
+  Future<List<ConversationDto>> listConversations() async => [];
 
   @override
-  Future<PigeonConversationDto> getConversation(String arg_sidOrUniqueName) async {
+  Future<ConversationDto> getConversation(String arg_sidOrUniqueName) async {
     throw UnimplementedError();
   }
 
   @override
-  Future<List<PigeonMessageDto>> getLastMessages(
-    PigeonGetMessagesRequest arg_request,
+  Future<List<MessageDto>> getLastMessages(
+    GetMessagesRequest arg_request,
   ) async =>
       [];
 
   @override
-  Future<List<PigeonParticipantDto>> getParticipants(
-    PigeonConversationRequest arg_request,
+  Future<List<ParticipantDto>> getParticipants(
+    ConversationRequest arg_request,
   ) async =>
       [];
 
   @override
-  Future<void> sendTyping(PigeonConversationRequest arg_request) async {}
+  Future<void> sendTyping(ConversationRequest arg_request) async {}
 
   @override
-  Future<List<PigeonMessageDto>> getMessagesBefore(
-    PigeonGetMessagesBeforeRequest arg_request,
+  Future<List<MessageDto>> getMessagesBefore(
+    GetMessagesBeforeRequest arg_request,
   ) async =>
       [];
 
   @override
-  Future<PigeonMessageDto> sendMediaMessage(
-    PigeonSendMediaMessageRequest arg_request,
+  Future<MessageDto> sendMediaMessage(
+    SendMediaMessageRequest arg_request,
   ) async {
-    return PigeonMessageDto(
+    return MessageDto(
       sid: 'IMmedia',
       conversationSid: arg_request.conversationSid,
       author: 'test_user',
       body: arg_request.caption ?? '',
       messageIndex: 2,
       dateCreatedEpochMs: DateTime.utc(2024, 1, 2).millisecondsSinceEpoch,
-      contentType: PigeonMessageContentType.media,
+      contentType: MessageContentType.media,
     );
   }
 
   @override
   Future<String> getMediaTemporaryUrl(
-    PigeonGetMediaTemporaryUrlRequest arg_request,
+    GetMediaTemporaryUrlRequest arg_request,
   ) async =>
       'https://example.com/media';
 }

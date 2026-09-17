@@ -126,18 +126,18 @@ class _MediaHostApi extends FakeConversationsHostApi {
   var sendMediaCount = 0;
 
   @override
-  Future<PigeonMessageDto> sendMediaMessage(
-    PigeonSendMediaMessageRequest arg_request,
+  Future<MessageDto> sendMediaMessage(
+    SendMediaMessageRequest arg_request,
   ) async {
     sendMediaCount++;
-    return PigeonMessageDto(
+    return MessageDto(
       sid: 'IMmedia',
       conversationSid: arg_request.conversationSid,
       author: 'test_user',
       body: '',
       messageIndex: 2,
       dateCreatedEpochMs: DateTime.utc(2024, 1, 2).millisecondsSinceEpoch,
-      contentType: PigeonMessageContentType.media,
+      contentType: MessageContentType.media,
     );
   }
 }

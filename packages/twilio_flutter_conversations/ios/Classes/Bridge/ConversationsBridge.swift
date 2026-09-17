@@ -17,7 +17,7 @@ final class ConversationsBridge: NSObject, TwilioConversationsHostApi {
   }
 
   func connect(
-    request: PigeonConnectRequest,
+    request: ConnectRequest,
     completion: @escaping (Result<Void, Error>) -> Void
   ) {
     if client != nil || isConnectInFlight {
@@ -123,7 +123,7 @@ final class ConversationsBridge: NSObject, TwilioConversationsHostApi {
     }
   }
 
-  func listConversations(completion: @escaping (Result<[PigeonConversationDto], Error>) -> Void) {
+  func listConversations(completion: @escaping (Result<[ConversationDto], Error>) -> Void) {
     guard let activeClient = client else {
       completion(notConnectedFailure())
       return
@@ -136,7 +136,7 @@ final class ConversationsBridge: NSObject, TwilioConversationsHostApi {
 
   func getConversation(
     sidOrUniqueName: String,
-    completion: @escaping (Result<PigeonConversationDto, Error>) -> Void
+    completion: @escaping (Result<ConversationDto, Error>) -> Void
   ) {
     resolveConversation(sidOrUniqueName: sidOrUniqueName) { result in
       switch result {
@@ -149,8 +149,8 @@ final class ConversationsBridge: NSObject, TwilioConversationsHostApi {
   }
 
   func getLastMessages(
-    request: PigeonGetMessagesRequest,
-    completion: @escaping (Result<[PigeonMessageDto], Error>) -> Void
+    request: GetMessagesRequest,
+    completion: @escaping (Result<[MessageDto], Error>) -> Void
   ) {
     let count = max(1, min(request.count, 100))
     resolveConversation(sidOrUniqueName: request.conversationSid) { result in
@@ -196,8 +196,8 @@ final class ConversationsBridge: NSObject, TwilioConversationsHostApi {
   }
 
   func getMessagesBefore(
-    request: PigeonGetMessagesBeforeRequest,
-    completion: @escaping (Result<[PigeonMessageDto], Error>) -> Void
+    request: GetMessagesBeforeRequest,
+    completion: @escaping (Result<[MessageDto], Error>) -> Void
   ) {
     let count = max(1, min(request.count, 100))
     resolveConversation(sidOrUniqueName: request.conversationSid) { result in
@@ -240,8 +240,8 @@ final class ConversationsBridge: NSObject, TwilioConversationsHostApi {
   }
 
   func sendMediaMessage(
-    request: PigeonSendMediaMessageRequest,
-    completion: @escaping (Result<PigeonMessageDto, Error>) -> Void
+    request: SendMediaMessageRequest,
+    completion: @escaping (Result<MessageDto, Error>) -> Void
   ) {
     resolveConversation(sidOrUniqueName: request.conversationSid) { result in
       switch result {
@@ -340,7 +340,7 @@ final class ConversationsBridge: NSObject, TwilioConversationsHostApi {
   }
 
   func getMediaTemporaryUrl(
-    request: PigeonGetMediaTemporaryUrlRequest,
+    request: GetMediaTemporaryUrlRequest,
     completion: @escaping (Result<String, Error>) -> Void
   ) {
     resolveConversation(sidOrUniqueName: request.conversationSid) { result in
@@ -400,8 +400,8 @@ final class ConversationsBridge: NSObject, TwilioConversationsHostApi {
   }
 
   func getParticipants(
-    request: PigeonConversationRequest,
-    completion: @escaping (Result<[PigeonParticipantDto], Error>) -> Void
+    request: ConversationRequest,
+    completion: @escaping (Result<[ParticipantDto], Error>) -> Void
   ) {
     resolveConversation(sidOrUniqueName: request.conversationSid) { result in
       switch result {
@@ -420,7 +420,7 @@ final class ConversationsBridge: NSObject, TwilioConversationsHostApi {
         }
 
         let participants =
-          conversation.participants()?.compactMap { participant -> PigeonParticipantDto? in
+          conversation.participants()?.compactMap { participant -> ParticipantDto? in
             guard let participant else {
               return nil
             }
@@ -434,7 +434,7 @@ final class ConversationsBridge: NSObject, TwilioConversationsHostApi {
   }
 
   func sendTyping(
-    request: PigeonConversationRequest,
+    request: ConversationRequest,
     completion: @escaping (Result<Void, Error>) -> Void
   ) {
     resolveConversation(sidOrUniqueName: request.conversationSid) { result in
@@ -462,8 +462,8 @@ final class ConversationsBridge: NSObject, TwilioConversationsHostApi {
   }
 
   func sendMessage(
-    request: PigeonSendMessageRequest,
-    completion: @escaping (Result<PigeonMessageDto, Error>) -> Void
+    request: SendMessageRequest,
+    completion: @escaping (Result<MessageDto, Error>) -> Void
   ) {
     resolveConversation(sidOrUniqueName: request.conversationSid) { result in
       switch result {
@@ -537,7 +537,7 @@ final class ConversationsBridge: NSObject, TwilioConversationsHostApi {
     conversationListeners.removeAll()
   }
 
-  private func notConnectedFailure() -> Result<[PigeonConversationDto], Error> {
+  private func notConnectedFailure() -> Result<[ConversationDto], Error> {
     .failure(
       FlutterError(
         code: "not_connected",

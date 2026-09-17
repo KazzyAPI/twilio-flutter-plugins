@@ -15,7 +15,7 @@ import 'package:pigeon/pigeon.dart';
   ),
 )
 /// Client synchronization status mirrored from the Twilio Conversations SDK.
-enum PigeonClientSynchronizationStatus {
+enum ClientSynchronizationStatus {
   unknown,
   started,
   conversationsListCompleted,
@@ -24,7 +24,7 @@ enum PigeonClientSynchronizationStatus {
 }
 
 /// Native client connection state.
-enum PigeonClientConnectionState {
+enum ClientConnectionState {
   unknown,
   connecting,
   connected,
@@ -35,7 +35,7 @@ enum PigeonClientConnectionState {
 }
 
 /// Per-conversation synchronization state.
-enum PigeonConversationSynchronizationStatus {
+enum ConversationSynchronizationStatus {
   unknown,
   none,
   identifier,
@@ -46,7 +46,7 @@ enum PigeonConversationSynchronizationStatus {
 }
 
 /// Discriminator for events emitted from native code to Dart.
-enum PigeonConversationsEventType {
+enum ConversationsEventType {
   clientSynchronizationStatusUpdated,
   connectionStateChanged,
   conversationAdded,
@@ -70,14 +70,14 @@ enum PigeonConversationsEventType {
   error,
 }
 
-class PigeonConnectRequest {
-  PigeonConnectRequest({required this.accessToken});
+class ConnectRequest {
+  ConnectRequest({required this.accessToken});
 
   String accessToken;
 }
 
-class PigeonConversationDto {
-  PigeonConversationDto({
+class ConversationDto {
+  ConversationDto({
     required this.sid,
     required this.uniqueName,
     required this.friendlyName,
@@ -90,13 +90,13 @@ class PigeonConversationDto {
   int? lastMessageIndex;
 }
 
-enum PigeonMessageContentType {
+enum MessageContentType {
   text,
   media,
 }
 
-class PigeonMediaAttachmentDto {
-  PigeonMediaAttachmentDto({
+class MediaAttachmentDto {
+  MediaAttachmentDto({
     required this.sid,
     required this.contentType,
     required this.filename,
@@ -109,15 +109,15 @@ class PigeonMediaAttachmentDto {
   int sizeBytes;
 }
 
-class PigeonMessageDto {
-  PigeonMessageDto({
+class MessageDto {
+  MessageDto({
     required this.sid,
     required this.conversationSid,
     required this.author,
     required this.body,
     required this.messageIndex,
     required this.dateCreatedEpochMs,
-    this.contentType = PigeonMessageContentType.text,
+    this.contentType = MessageContentType.text,
     this.mediaAttachments,
     this.attributesJson,
   });
@@ -128,13 +128,13 @@ class PigeonMessageDto {
   String body;
   int messageIndex;
   int dateCreatedEpochMs;
-  PigeonMessageContentType contentType;
-  List<PigeonMediaAttachmentDto?>? mediaAttachments;
+  MessageContentType contentType;
+  List<MediaAttachmentDto?>? mediaAttachments;
   String? attributesJson;
 }
 
-class PigeonParticipantDto {
-  PigeonParticipantDto({
+class ParticipantDto {
+  ParticipantDto({
     required this.sid,
     required this.identity,
     required this.conversationSid,
@@ -145,8 +145,8 @@ class PigeonParticipantDto {
   String conversationSid;
 }
 
-class PigeonUserDto {
-  PigeonUserDto({
+class UserDto {
+  UserDto({
     required this.identity,
     this.friendlyName,
   });
@@ -155,8 +155,8 @@ class PigeonUserDto {
   String? friendlyName;
 }
 
-class PigeonSendMessageRequest {
-  PigeonSendMessageRequest({
+class SendMessageRequest {
+  SendMessageRequest({
     required this.conversationSid,
     required this.body,
     this.attributesJson,
@@ -167,8 +167,8 @@ class PigeonSendMessageRequest {
   String? attributesJson;
 }
 
-class PigeonGetMessagesRequest {
-  PigeonGetMessagesRequest({
+class GetMessagesRequest {
+  GetMessagesRequest({
     required this.conversationSid,
     required this.count,
   });
@@ -177,8 +177,8 @@ class PigeonGetMessagesRequest {
   int count;
 }
 
-class PigeonGetMessagesBeforeRequest {
-  PigeonGetMessagesBeforeRequest({
+class GetMessagesBeforeRequest {
+  GetMessagesBeforeRequest({
     required this.conversationSid,
     required this.beforeMessageIndex,
     required this.count,
@@ -189,8 +189,8 @@ class PigeonGetMessagesBeforeRequest {
   int count;
 }
 
-class PigeonSendMediaMessageRequest {
-  PigeonSendMediaMessageRequest({
+class SendMediaMessageRequest {
+  SendMediaMessageRequest({
     required this.conversationSid,
     required this.filePath,
     required this.mimeType,
@@ -207,8 +207,8 @@ class PigeonSendMediaMessageRequest {
   String? attributesJson;
 }
 
-class PigeonGetMediaTemporaryUrlRequest {
-  PigeonGetMediaTemporaryUrlRequest({
+class GetMediaTemporaryUrlRequest {
+  GetMediaTemporaryUrlRequest({
     required this.conversationSid,
     required this.messageIndex,
     required this.mediaSid,
@@ -219,14 +219,14 @@ class PigeonGetMediaTemporaryUrlRequest {
   String mediaSid;
 }
 
-class PigeonConversationRequest {
-  PigeonConversationRequest({required this.conversationSid});
+class ConversationRequest {
+  ConversationRequest({required this.conversationSid});
 
   String conversationSid;
 }
 
-class PigeonConversationsNativeEvent {
-  PigeonConversationsNativeEvent({
+class ConversationsNativeEvent {
+  ConversationsNativeEvent({
     required this.type,
     this.synchronizationStatus,
     this.connectionState,
@@ -240,14 +240,14 @@ class PigeonConversationsNativeEvent {
     this.errorMessage,
   });
 
-  PigeonConversationsEventType type;
-  PigeonClientSynchronizationStatus? synchronizationStatus;
-  PigeonClientConnectionState? connectionState;
-  PigeonConversationSynchronizationStatus? conversationSyncStatus;
-  PigeonConversationDto? conversation;
-  PigeonMessageDto? message;
-  PigeonParticipantDto? participant;
-  PigeonUserDto? user;
+  ConversationsEventType type;
+  ClientSynchronizationStatus? synchronizationStatus;
+  ClientConnectionState? connectionState;
+  ConversationSynchronizationStatus? conversationSyncStatus;
+  ConversationDto? conversation;
+  MessageDto? message;
+  ParticipantDto? participant;
+  UserDto? user;
   String? updateReason;
   String? errorCode;
   String? errorMessage;
@@ -256,7 +256,7 @@ class PigeonConversationsNativeEvent {
 @HostApi()
 abstract class TwilioConversationsHostApi {
   @async
-  void connect(PigeonConnectRequest request);
+  void connect(ConnectRequest request);
 
   @async
   void disconnect();
@@ -265,34 +265,34 @@ abstract class TwilioConversationsHostApi {
   void updateAccessToken(String accessToken);
 
   @async
-  PigeonMessageDto sendMessage(PigeonSendMessageRequest request);
+  MessageDto sendMessage(SendMessageRequest request);
 
   @async
-  List<PigeonConversationDto> listConversations();
+  List<ConversationDto> listConversations();
 
   @async
-  PigeonConversationDto getConversation(String sidOrUniqueName);
+  ConversationDto getConversation(String sidOrUniqueName);
 
   @async
-  List<PigeonMessageDto> getLastMessages(PigeonGetMessagesRequest request);
+  List<MessageDto> getLastMessages(GetMessagesRequest request);
 
   @async
-  List<PigeonMessageDto> getMessagesBefore(PigeonGetMessagesBeforeRequest request);
+  List<MessageDto> getMessagesBefore(GetMessagesBeforeRequest request);
 
   @async
-  PigeonMessageDto sendMediaMessage(PigeonSendMediaMessageRequest request);
+  MessageDto sendMediaMessage(SendMediaMessageRequest request);
 
   @async
-  String getMediaTemporaryUrl(PigeonGetMediaTemporaryUrlRequest request);
+  String getMediaTemporaryUrl(GetMediaTemporaryUrlRequest request);
 
   @async
-  List<PigeonParticipantDto> getParticipants(PigeonConversationRequest request);
+  List<ParticipantDto> getParticipants(ConversationRequest request);
 
   @async
-  void sendTyping(PigeonConversationRequest request);
+  void sendTyping(ConversationRequest request);
 }
 
 @FlutterApi()
 abstract class TwilioConversationsFlutterApi {
-  void onNativeEvent(PigeonConversationsNativeEvent event);
+  void onNativeEvent(ConversationsNativeEvent event);
 }

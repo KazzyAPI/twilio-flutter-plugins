@@ -11,10 +11,10 @@ void main() {
   group('ConversationsEventMapper', () {
     test('maps synchronization status updates', () {
       final event = mapper.map(
-        PigeonConversationsNativeEvent(
-          type: PigeonConversationsEventType
+        ConversationsNativeEvent(
+          type: ConversationsEventType
               .clientSynchronizationStatusUpdated,
-          synchronizationStatus: PigeonClientSynchronizationStatus.completed,
+          synchronizationStatus: ClientSynchronizationStatus.completed,
         ),
       );
 
@@ -27,9 +27,9 @@ void main() {
 
     test('maps conversation added events', () {
       final event = mapper.map(
-        PigeonConversationsNativeEvent(
-          type: PigeonConversationsEventType.conversationAdded,
-          conversation: PigeonConversationDto(
+        ConversationsNativeEvent(
+          type: ConversationsEventType.conversationAdded,
+          conversation: ConversationDto(
             sid: 'CHxxx',
             uniqueName: 'general',
             friendlyName: 'General',
@@ -46,16 +46,16 @@ void main() {
 
     test('maps message added events', () {
       final event = mapper.map(
-        PigeonConversationsNativeEvent(
-          type: PigeonConversationsEventType.messageAdded,
-          message: PigeonMessageDto(
+        ConversationsNativeEvent(
+          type: ConversationsEventType.messageAdded,
+          message: MessageDto(
             sid: 'IMxxx',
             conversationSid: 'CHxxx',
             author: 'user_1',
             body: 'Hello',
             messageIndex: 4,
             dateCreatedEpochMs: 1700000000000,
-            contentType: PigeonMessageContentType.text,
+            contentType: MessageContentType.text,
           ),
         ),
       );
@@ -69,16 +69,16 @@ void main() {
     test('maps token lifecycle events', () {
       expect(
         mapper.map(
-          PigeonConversationsNativeEvent(
-            type: PigeonConversationsEventType.tokenAboutToExpire,
+          ConversationsNativeEvent(
+            type: ConversationsEventType.tokenAboutToExpire,
           ),
         ),
         isA<TokenAboutToExpire>(),
       );
       expect(
         mapper.map(
-          PigeonConversationsNativeEvent(
-            type: PigeonConversationsEventType.tokenExpired,
+          ConversationsNativeEvent(
+            type: ConversationsEventType.tokenExpired,
           ),
         ),
         isA<TokenExpired>(),
@@ -87,17 +87,17 @@ void main() {
 
     test('maps connection and participant events', () {
       final connection = mapper.map(
-        PigeonConversationsNativeEvent(
-          type: PigeonConversationsEventType.connectionStateChanged,
-          connectionState: PigeonClientConnectionState.disconnected,
+        ConversationsNativeEvent(
+          type: ConversationsEventType.connectionStateChanged,
+          connectionState: ClientConnectionState.disconnected,
         ),
       );
       expect(connection, isA<ClientConnectionStateChanged>());
 
       final participant = mapper.map(
-        PigeonConversationsNativeEvent(
-          type: PigeonConversationsEventType.participantAdded,
-          participant: PigeonParticipantDto(
+        ConversationsNativeEvent(
+          type: ConversationsEventType.participantAdded,
+          participant: ParticipantDto(
             sid: 'MBxxx',
             conversationSid: 'CHxxx',
             identity: 'user_1',
@@ -110,16 +110,16 @@ void main() {
     test('maps message update/delete and typing events', () {
       expect(
         mapper.map(
-          PigeonConversationsNativeEvent(
-            type: PigeonConversationsEventType.messageUpdated,
-            message: PigeonMessageDto(
+          ConversationsNativeEvent(
+            type: ConversationsEventType.messageUpdated,
+            message: MessageDto(
               sid: 'IMxxx',
               conversationSid: 'CHxxx',
               author: 'a',
               body: 'b',
               messageIndex: 1,
               dateCreatedEpochMs: 1,
-              contentType: PigeonMessageContentType.text,
+              contentType: MessageContentType.text,
             ),
           ),
         ),
@@ -127,9 +127,9 @@ void main() {
       );
       expect(
         mapper.map(
-          PigeonConversationsNativeEvent(
-            type: PigeonConversationsEventType.typingStarted,
-            participant: PigeonParticipantDto(
+          ConversationsNativeEvent(
+            type: ConversationsEventType.typingStarted,
+            participant: ParticipantDto(
               sid: 'MBxxx',
               conversationSid: 'CHxxx',
               identity: 'user_1',
@@ -142,8 +142,8 @@ void main() {
 
     test('maps sdk error events', () {
       final event = mapper.map(
-        PigeonConversationsNativeEvent(
-          type: PigeonConversationsEventType.error,
+        ConversationsNativeEvent(
+          type: ConversationsEventType.error,
           errorCode: TwilioErrorCode.notConnected.code,
           errorMessage: 'Client is not connected',
         ),

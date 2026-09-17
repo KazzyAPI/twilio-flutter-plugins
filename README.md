@@ -55,8 +55,8 @@ In Cursor, use slash commands from `.cursor/commands/`:
 
 | Layer | Version |
 | --- | --- |
-| Flutter | 3.16+ (CI: stable) |
-| Dart | 3.2+ (bundled with Flutter 3.16+) |
+| Flutter | 3.47+ (CI: 3.47.4) |
+| Dart | 3.13+ (bundled with Flutter 3.47+) |
 | Android min SDK | 21 |
 | iOS min | 13.0 |
 | Twilio Conversations Android | 6.2.1 (Maven Central) |

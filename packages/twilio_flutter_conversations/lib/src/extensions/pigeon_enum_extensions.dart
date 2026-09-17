@@ -3,78 +3,78 @@ import '../models/client_synchronization_status.dart';
 import '../models/conversation_synchronization_status.dart';
 import '../pigeon/conversations.pigeon.dart';
 
-extension PigeonClientSynchronizationStatusX on PigeonClientSynchronizationStatus {
+extension ClientSynchronizationStatusX on ClientSynchronizationStatus {
   TwilioClientSynchronizationStatus toPublic() {
     return switch (this) {
-      PigeonClientSynchronizationStatus.started =>
+      ClientSynchronizationStatus.started =>
         TwilioClientSynchronizationStatus.started,
-      PigeonClientSynchronizationStatus.conversationsListCompleted =>
+      ClientSynchronizationStatus.conversationsListCompleted =>
         TwilioClientSynchronizationStatus.conversationsListCompleted,
-      PigeonClientSynchronizationStatus.completed =>
+      ClientSynchronizationStatus.completed =>
         TwilioClientSynchronizationStatus.completed,
-      PigeonClientSynchronizationStatus.failed =>
+      ClientSynchronizationStatus.failed =>
         TwilioClientSynchronizationStatus.failed,
-      PigeonClientSynchronizationStatus.unknown =>
+      ClientSynchronizationStatus.unknown =>
         TwilioClientSynchronizationStatus.unknown,
     };
   }
 }
 
-extension NullablePigeonClientSynchronizationStatusX
-    on PigeonClientSynchronizationStatus? {
+extension NullableClientSynchronizationStatusX
+    on ClientSynchronizationStatus? {
   TwilioClientSynchronizationStatus toPublic() {
     return this?.toPublic() ?? TwilioClientSynchronizationStatus.unknown;
   }
 }
 
-extension PigeonClientConnectionStateX on PigeonClientConnectionState {
+extension ClientConnectionStateX on ClientConnectionState {
   TwilioClientConnectionState toPublic() {
     return switch (this) {
-      PigeonClientConnectionState.connecting =>
+      ClientConnectionState.connecting =>
         TwilioClientConnectionState.connecting,
-      PigeonClientConnectionState.connected =>
+      ClientConnectionState.connected =>
         TwilioClientConnectionState.connected,
-      PigeonClientConnectionState.disconnected =>
+      ClientConnectionState.disconnected =>
         TwilioClientConnectionState.disconnected,
-      PigeonClientConnectionState.denied => TwilioClientConnectionState.denied,
-      PigeonClientConnectionState.error => TwilioClientConnectionState.error,
-      PigeonClientConnectionState.fatal => TwilioClientConnectionState.fatal,
-      PigeonClientConnectionState.unknown =>
+      ClientConnectionState.denied => TwilioClientConnectionState.denied,
+      ClientConnectionState.error => TwilioClientConnectionState.error,
+      ClientConnectionState.fatal => TwilioClientConnectionState.fatal,
+      ClientConnectionState.unknown =>
         TwilioClientConnectionState.unknown,
     };
   }
 }
 
-extension NullablePigeonClientConnectionStateX on PigeonClientConnectionState? {
+extension NullableClientConnectionStateX on ClientConnectionState? {
   TwilioClientConnectionState toPublic() {
     return this?.toPublic() ?? TwilioClientConnectionState.unknown;
   }
 }
 
-extension PigeonConversationSynchronizationStatusX
-    on PigeonConversationSynchronizationStatus {
+extension ConversationSynchronizationStatusX
+    on ConversationSynchronizationStatus {
   TwilioConversationSynchronizationStatus toPublic() {
     return switch (this) {
-      PigeonConversationSynchronizationStatus.none =>
+      ConversationSynchronizationStatus.none =>
         TwilioConversationSynchronizationStatus.none,
-      PigeonConversationSynchronizationStatus.identifier =>
+      ConversationSynchronizationStatus.identifier =>
         TwilioConversationSynchronizationStatus.identifier,
-      PigeonConversationSynchronizationStatus.metadata =>
+      ConversationSynchronizationStatus.metadata =>
         TwilioConversationSynchronizationStatus.metadata,
-      PigeonConversationSynchronizationStatus.syncWindow =>
+      ConversationSynchronizationStatus.syncWindow =>
         TwilioConversationSynchronizationStatus.syncWindow,
-      PigeonConversationSynchronizationStatus.all =>
+      ConversationSynchronizationStatus.all =>
         TwilioConversationSynchronizationStatus.all,
-      PigeonConversationSynchronizationStatus.failed =>
+      ConversationSynchronizationStatus.failed =>
         TwilioConversationSynchronizationStatus.failed,
-      PigeonConversationSynchronizationStatus.unknown =>
+      ConversationSynchronizationStatus.unknown =>
         TwilioConversationSynchronizationStatus.unknown,
     };
   }
 }
 
-extension NullablePigeonConversationSynchronizationStatusX
-    on PigeonConversationSynchronizationStatus? {
+extension NullableConversationSynchronizationStatusX
+    on ConversationSynchronizationStatus? {
   TwilioConversationSynchronizationStatus toPublic() {
     return this?.toPublic() ?? TwilioConversationSynchronizationStatus.unknown;
   }
