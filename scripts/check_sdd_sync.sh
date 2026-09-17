@@ -24,8 +24,13 @@ if [[ -f .specify/feature.json ]]; then
   fi
 fi
 
-if [[ -z "$feature_dir" || ! -d "$feature_dir" ]]; then
-  echo "SDD sync check failed: .specify/feature.json must set a valid feature_directory."
+if [[ -z "$feature_dir" ]]; then
+  feature_dir="specs/001-twilio-flutter-conversations"
+fi
+
+if [[ ! -d "$feature_dir" ]]; then
+  echo "SDD sync check failed: feature directory not found: $feature_dir"
+  echo "Set .specify/feature.json feature_directory or SPECIFY_FEATURE_DIRECTORY."
   exit 1
 fi
 
