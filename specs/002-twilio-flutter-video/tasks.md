@@ -10,5 +10,6 @@ Feature: `specs/002-twilio-flutter-video`
 - [x] FR-6: Pin Twilio Video Android + iOS SDKs in Gradle/podspec
 - [x] CI: Align Conversations Android 6.2.1 + Pigeon 29 suspend Flutter APIs (shared `EventEmitter` coroutine dispatch; JVM-safe attribute JSON validation)
 - [x] CI: iOS Conversations host adapter + `@MainActor` Flutter event dispatch (Pigeon 29)
+- [x] CI: Example iOS UIScene + CocoaPods (disable SPM) for Twilio podspec plugins
 - [ ] P2: Platform views for video rendering (future)
 - [ ] Example app + device E2E (future)

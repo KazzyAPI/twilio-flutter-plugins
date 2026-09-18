@@ -12,7 +12,7 @@ Use the repo [`.flutter-version`](../.flutter-version) (currently **3.47.4**) wi
 | Twilio Conversations Android | **6.2.1** (`android/build.gradle`) | https://www.twilio.com/docs/conversations-classic/android/changelog |
 | Twilio Conversations iOS | **~> 4.0** (`ios/twilio_flutter_conversations.podspec`) | https://www.twilio.com/docs/conversations-classic/ios/changelog |
 | Android min SDK | 21 | Twilio Conversations requirement |
-| iOS deployment target | 13.0 | Podspec |
+| iOS deployment target | 13.0 | Podspec; example app uses UIScene lifecycle (Flutter 3.47+) and `enable-swift-package-manager: false` for CocoaPods-only Twilio SDKs |
 | Twilio Video Android | **7.10.4** (`packages/twilio_flutter_video/android/build.gradle`) | https://www.twilio.com/docs/video/changelog |
 | Twilio Video iOS | **~> 5.8** (`packages/twilio_flutter_video/ios/twilio_flutter_video.podspec`) | https://www.twilio.com/docs/video/ios |
 
