@@ -32,7 +32,7 @@ final class ConversationsEventMapper {
       return .denied
     case .error:
       return .error
-    case .fatal:
+    case .fatalError:
       return .fatal
     default:
       return .unknown
@@ -49,8 +49,6 @@ final class ConversationsEventMapper {
       return .identifier
     case .metadata:
       return .metadata
-    case .syncWindow:
-      return .syncWindow
     case .all:
       return .all
     case .failed:
