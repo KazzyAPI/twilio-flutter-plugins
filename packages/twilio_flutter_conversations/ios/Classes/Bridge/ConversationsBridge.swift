@@ -539,7 +539,7 @@ final class ConversationsBridge: NSObject {
 
   private static func applyAttributesJson(
     _ attributesJson: String,
-    to builder: TCHMessageBuilder
+    to builder: MessageBuilder
   ) -> Error? {
     do {
       let attributes = try MessageAttributesJson.attributes(fromJson: attributesJson)
