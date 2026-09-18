@@ -9,6 +9,8 @@ final class ConversationsEventEmitter {
   }
 
   func emit(event: ConversationsNativeEvent) {
-    flutterApi.onNativeEvent(event: event) { _ in }
+    Task { @MainActor in
+      try? await flutterApi.onNativeEvent(event: event)
+    }
   }
 }

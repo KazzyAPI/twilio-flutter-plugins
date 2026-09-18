@@ -8,6 +8,8 @@ final class VideoEventEmitter {
   }
 
   func emit(event: VideoNativeEvent) {
-    flutterApi.onNativeEvent(event: event) { _ in }
+    Task { @MainActor in
+      try? await flutterApi.onNativeEvent(event: event)
+    }
   }
 }

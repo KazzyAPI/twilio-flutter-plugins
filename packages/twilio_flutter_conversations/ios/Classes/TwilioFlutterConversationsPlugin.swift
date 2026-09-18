@@ -6,9 +6,10 @@ public class TwilioFlutterConversationsPlugin: NSObject {
 
   public static func register(with registrar: FlutterPluginRegistrar) {
     let bridge = ConversationsBridge(binaryMessenger: registrar.messenger())
+    let hostApi = ConversationsBridgeHostAdapter(bridge: bridge)
     TwilioConversationsHostApiSetup.setUp(
       binaryMessenger: registrar.messenger(),
-      api: bridge
+      api: hostApi
     )
 
     let instance = TwilioFlutterConversationsPlugin()

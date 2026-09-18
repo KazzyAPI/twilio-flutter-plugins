@@ -3,7 +3,7 @@ import Foundation
 import TwilioConversationsClient
 
 /// Host-side bridge between Twilio Conversations SDK and Flutter pigeon APIs.
-final class ConversationsBridge: NSObject, TwilioConversationsHostApi {
+final class ConversationsBridge: NSObject {
   private let eventEmitter: ConversationsEventEmitter
   private let eventMapper = ConversationsEventMapper()
   private var client: TwilioConversationsClient?
