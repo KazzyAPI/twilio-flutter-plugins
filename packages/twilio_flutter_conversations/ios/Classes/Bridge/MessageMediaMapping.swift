@@ -15,16 +15,12 @@ enum MessageMediaMapping {
     base: MessageDto,
     message: TCHMessage
   ) -> MessageDto {
-    guard let mediaItems = message.attachedMedia, !mediaItems.isEmpty else {
+    let mediaItems = message.attachedMedia
+    if mediaItems.isEmpty {
       return base
     }
 
-    let attachments = mediaItems.compactMap { item -> MediaAttachmentDto? in
-      guard let media = item else {
-        return nil
-      }
-      return mapMedia(media)
-    }
+    let attachments = mediaItems.map { mapMedia($0) }
 
     return MessageDto(
       sid: base.sid,

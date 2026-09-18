@@ -16,5 +16,6 @@ Feature: `specs/002-twilio-flutter-video`
 - [x] CI: iOS Conversations SDK 4.x delegates (`TCH*Update`, client delegate callbacks)
 - [x] CI: iOS typing delegate selectors and `Media` type rename
 - [x] CI: iOS async conversation lookup and `Set` for temporary media URLs
+- [x] CI: iOS message builder attributes/media APIs and non-optional attachedMedia
 - [ ] P2: Platform views for video rendering (future)
 - [ ] Example app + device E2E (future)

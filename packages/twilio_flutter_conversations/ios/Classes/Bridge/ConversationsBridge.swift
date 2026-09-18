@@ -285,17 +285,13 @@ final class ConversationsBridge: NSObject {
           preparedMessage.setBody(caption)
         }
         if let attributesJson = request.attributesJson, !attributesJson.isEmpty {
-          do {
-            try preparedMessage.setAttributes(
-              MessageAttributesJson.attributes(fromJson: attributesJson)
-            )
-          } catch {
+          if let error = Self.applyAttributesJson(attributesJson, to: preparedMessage) {
             completion(
               .failure(
                 FlutterError(
                   code: "invalid_argument",
-                  message: "attributesJson must be a valid JSON object.",
-                  details: error.localizedDescription
+                  message: error.localizedDescription,
+                  details: nil
                 )
               )
             )
@@ -304,7 +300,7 @@ final class ConversationsBridge: NSObject {
         }
 
         preparedMessage.addMedia(
-          data: data,
+          with: data,
           contentType: request.mimeType,
           filename: request.filename,
           listener: nil
@@ -356,8 +352,8 @@ final class ConversationsBridge: NSObject {
           }
 
           guard
-            let media = message.attachedMedia?.compactMap({ $0 }).first(where: {
-              $0.sid == request.mediaSid
+            let media = message.attachedMedia.first(where: {
+              ($0.sid ?? "") == request.mediaSid
             })
           else {
             completion(
@@ -494,17 +490,13 @@ final class ConversationsBridge: NSObject {
         preparedMessage.setBody(request.body)
 
         if let attributesJson = request.attributesJson, !attributesJson.isEmpty {
-          do {
-            try preparedMessage.setAttributes(
-              MessageAttributesJson.attributes(fromJson: attributesJson)
-            )
-          } catch {
+          if let error = Self.applyAttributesJson(attributesJson, to: preparedMessage) {
             completion(
               .failure(
                 FlutterError(
                   code: "invalid_argument",
-                  message: "attributesJson must be a valid JSON object.",
-                  details: error.localizedDescription
+                  message: error.localizedDescription,
+                  details: nil
                 )
               )
             )
@@ -543,6 +535,27 @@ final class ConversationsBridge: NSObject {
     client?.delegate = nil
     client?.shutdown()
     client = nil
+  }
+
+  private static func applyAttributesJson(
+    _ attributesJson: String,
+    to builder: TCHMessageBuilder
+  ) -> Error? {
+    do {
+      let attributes = try MessageAttributesJson.attributes(fromJson: attributesJson)
+      var error: NSError?
+      guard builder.setAttributes(attributes, error: &error) != nil else {
+        return error
+          ?? NSError(
+            domain: "TwilioFlutterConversations",
+            code: 0,
+            userInfo: [NSLocalizedDescriptionKey: "attributesJson must be a valid JSON object."]
+          )
+      }
+      return nil
+    } catch {
+      return error
+    }
   }
 
   private func notConnectedFailure() -> Result<[ConversationDto], Error> {
