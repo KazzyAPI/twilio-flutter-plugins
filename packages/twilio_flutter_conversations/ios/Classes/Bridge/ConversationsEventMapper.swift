@@ -74,7 +74,7 @@ final class ConversationsEventMapper {
       conversationSid: conversationSid,
       author: message.author ?? "",
       body: message.body ?? "",
-      messageIndex: Int64(message.index),
+      messageIndex: message.index?.int64Value ?? 0,
       dateCreatedEpochMs: Int64((message.dateCreatedAsDate?.timeIntervalSince1970 ?? 0) * 1000),
       contentType: .text,
       mediaAttachments: nil,

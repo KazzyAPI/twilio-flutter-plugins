@@ -3,7 +3,7 @@ import TwilioConversationsClient
 
 /// Shared JSON ↔ Twilio attributes conversion for iOS.
 enum MessageAttributesJson {
-  static func attributes(fromJson jsonObject: String) throws -> TCHJsonAttributes {
+  static func attributes(fromJson jsonObject: String) throws -> JsonAttributes {
     guard let data = jsonObject.data(using: .utf8) else {
       throw NSError(
         domain: "TwilioFlutterConversations",
@@ -19,7 +19,7 @@ enum MessageAttributesJson {
         userInfo: [NSLocalizedDescriptionKey: "attributesJson must decode to a JSON object."]
       )
     }
-    return TCHJsonAttributes(dictionary: dictionary)
+    return JsonAttributes(dictionary: dictionary)
   }
 
   static func json(from message: TCHMessage) -> String? {

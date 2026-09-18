@@ -300,7 +300,7 @@ final class ConversationsBridge: NSObject {
         }
 
         preparedMessage.addMedia(
-          with: data,
+          withData: data,
           contentType: request.mimeType,
           filename: request.filename,
           listener: nil
@@ -544,13 +544,9 @@ final class ConversationsBridge: NSObject {
     do {
       let attributes = try MessageAttributesJson.attributes(fromJson: attributesJson)
       var error: NSError?
-      guard builder.setAttributes(attributes, error: &error) != nil else {
+      _ = builder.setAttributes(attributes, error: &error)
+      if let error {
         return error
-          ?? NSError(
-            domain: "TwilioFlutterConversations",
-            code: 0,
-            userInfo: [NSLocalizedDescriptionKey: "attributesJson must be a valid JSON object."]
-          )
       }
       return nil
     } catch {
@@ -593,19 +589,19 @@ final class ConversationsBridge: NSObject {
     }
 
     activeClient.conversation(withSidOrUniqueName: sidOrUniqueName) { result, conversation in
-      if let conversation {
-        completion(.success(conversation))
-        return
-      }
-      completion(
-        .failure(
-          FlutterError(
-            code: "sdk_failure",
-            message: result.error?.localizedDescription ?? "Conversation not found",
-            details: nil
+      guard result.isSuccessful, let conversation else {
+        completion(
+          .failure(
+            FlutterError(
+              code: "sdk_failure",
+              message: result.error?.localizedDescription ?? "Conversation not found",
+              details: nil
+            )
           )
         )
-      )
+        return
+      }
+      completion(.success(conversation))
     }
   }
 
