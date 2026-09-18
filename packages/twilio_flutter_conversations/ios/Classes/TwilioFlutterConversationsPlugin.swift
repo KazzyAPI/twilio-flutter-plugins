@@ -1,7 +1,7 @@
 import Flutter
 import UIKit
 
-public class TwilioFlutterConversationsPlugin: NSObject {
+public class TwilioFlutterConversationsPlugin: NSObject, FlutterPlugin {
   private var bridge: ConversationsBridge?
 
   public static func register(with registrar: FlutterPluginRegistrar) {

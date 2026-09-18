@@ -24,5 +24,6 @@ Feature: `specs/002-twilio-flutter-video`
 - [x] CI: iOS ConversationDto `lastMessageIndex` as Int64; `TCHJsonAttributes` for attribute JSON
 - [x] CI: iOS bridge uses PigeonError, `typing()`, NSNumber message indices, TCHError on setAttributes
 - [x] CI: iOS message fetch UInt counts, addMedia labels, media URL strings, non-optional participants
+- [x] CI: Conversations iOS plugin conforms to FlutterPlugin for ObjC registrant
 - [ ] P2: Platform views for video rendering (future)
 - [ ] Example app + device E2E (future)
