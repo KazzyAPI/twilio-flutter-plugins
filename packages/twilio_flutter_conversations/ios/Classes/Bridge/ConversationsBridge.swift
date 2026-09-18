@@ -164,7 +164,7 @@ final class ConversationsBridge: NSObject {
           return
         }
 
-        conversation.getLastMessages(withCount: NSNumber(value: count)) { fetchResult, messages in
+        conversation.getLastMessages(withCount: count) { fetchResult, messages in
           if let messages {
             completion(
               .success(
@@ -208,8 +208,8 @@ final class ConversationsBridge: NSObject {
         }
 
         conversation.getMessagesBefore(
-          NSNumber(value: request.beforeMessageIndex),
-          withCount: NSNumber(value: count)
+          request.beforeMessageIndex,
+          withCount: count
         ) { fetchResult, messages in
           if let messages {
             completion(
@@ -337,7 +337,7 @@ final class ConversationsBridge: NSObject {
     resolveConversation(sidOrUniqueName: request.conversationSid) { result in
       switch result {
       case .success(let conversation):
-        conversation.message(withIndex: NSNumber(value: request.messageIndex)) { fetchResult, message in
+        conversation.message(withIndex: request.messageIndex) { fetchResult, message in
           guard let message else {
             completion(
               .failure(
