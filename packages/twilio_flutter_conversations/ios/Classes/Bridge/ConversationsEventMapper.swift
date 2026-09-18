@@ -32,7 +32,7 @@ final class ConversationsEventMapper {
       return .denied
     case .error:
       return .error
-    case .fatalError:
+    case .fatal:
       return .fatal
     default:
       return .unknown

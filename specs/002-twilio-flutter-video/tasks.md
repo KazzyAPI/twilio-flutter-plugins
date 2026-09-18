@@ -11,6 +11,7 @@ Feature: `specs/002-twilio-flutter-video`
 - [x] CI: Align Conversations Android 6.2.1 + Pigeon 29 suspend Flutter APIs (shared `EventEmitter` coroutine dispatch; JVM-safe attribute JSON validation)
 - [x] CI: iOS Conversations host adapter + `@MainActor` Flutter event dispatch (Pigeon 29)
 - [x] CI: Example iOS UIScene + CocoaPods (disable SPM) for Twilio podspec plugins
-- [x] CI: iOS event mapper enums aligned with Conversations SDK 4.x (drop syncWindow; fatalError connection state)
+- [x] CI: iOS event mapper enums aligned with Conversations SDK 4.x (drop syncWindow)
+- [x] CI: iOS media temporary URLs via `getTemporaryContentUrlsForMedia`
 - [ ] P2: Platform views for video rendering (future)
 - [ ] Example app + device E2E (future)

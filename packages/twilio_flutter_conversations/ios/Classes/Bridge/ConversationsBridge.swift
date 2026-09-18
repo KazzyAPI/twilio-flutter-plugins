@@ -377,7 +377,21 @@ final class ConversationsBridge: NSObject {
             return
           }
 
-          media.getTemporaryUrl { urlResult, url in
+          guard let activeClient = self.client else {
+            completion(
+              .failure(
+                FlutterError(
+                  code: "not_connected",
+                  message: "Connect before accessing media URLs.",
+                  details: nil
+                )
+              )
+            )
+            return
+          }
+
+          activeClient.getTemporaryContentUrlsForMedia([media]) { urlResult, sidToUrl in
+            let url = sidToUrl?[request.mediaSid] ?? sidToUrl?[media.sid ?? ""]
             if let url {
               completion(.success(url))
               return
