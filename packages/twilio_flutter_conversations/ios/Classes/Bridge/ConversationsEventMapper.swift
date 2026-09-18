@@ -32,9 +32,10 @@ final class ConversationsEventMapper {
       return .denied
     case .error:
       return .error
-    case .fatal:
-      return .fatal
-    default:
+    @unknown default:
+      if String(describing: state).lowercased().contains("fatal") {
+        return .fatal
+      }
       return .unknown
     }
   }

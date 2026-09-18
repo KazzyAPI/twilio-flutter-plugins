@@ -385,7 +385,7 @@ final class ConversationsBridge: NSObject {
             return
           }
 
-          activeClient.getTemporaryContentUrlsForMedia([media]) { urlResult, sidToUrl in
+          activeClient.getTemporaryContentUrlsForMedia(Set([media])) { urlResult, sidToUrl in
             let url = sidToUrl?[request.mediaSid] ?? sidToUrl?[media.sid ?? ""]
             if let url {
               completion(.success(url))
@@ -572,20 +572,28 @@ final class ConversationsBridge: NSObject {
       return
     }
 
-    if let conversation = activeClient.conversation(withSidOrUniqueName: sidOrUniqueName) {
-      completion(.success(conversation))
+    if let cached = activeClient.myConversations()?.first(where: {
+      $0.sid == sidOrUniqueName || $0.uniqueName == sidOrUniqueName
+    }) {
+      completion(.success(cached))
       return
     }
 
-    completion(
-      .failure(
-        FlutterError(
-          code: "sdk_failure",
-          message: "Conversation not found",
-          details: nil
+    activeClient.conversation(withSidOrUniqueName: sidOrUniqueName) { result, conversation in
+      if let conversation {
+        completion(.success(conversation))
+        return
+      }
+      completion(
+        .failure(
+          FlutterError(
+            code: "sdk_failure",
+            message: result.error?.localizedDescription ?? "Conversation not found",
+            details: nil
+          )
         )
       )
-    )
+    }
   }
 
   private func invalidatePendingConnect() {
