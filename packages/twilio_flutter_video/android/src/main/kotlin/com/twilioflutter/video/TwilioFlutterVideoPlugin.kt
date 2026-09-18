@@ -1,10 +1,19 @@
 package com.twilioflutter.video
 
+import com.twilioflutter.video.bridge.VideoBridge
+import com.twilioflutter.video.pigeon.TwilioVideoHostApi
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 
-/** Flutter plugin entry point for Twilio Video (scaffold). */
 class TwilioFlutterVideoPlugin : FlutterPlugin {
-  override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {}
+  private var videoBridge: VideoBridge? = null
 
-  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {}
+  override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+    videoBridge = VideoBridge(binding.applicationContext, binding.binaryMessenger)
+    TwilioVideoHostApi.setUp(binding.binaryMessenger, videoBridge)
+  }
+
+  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+    TwilioVideoHostApi.setUp(binding.binaryMessenger, null)
+    videoBridge = null
+  }
 }

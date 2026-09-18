@@ -6,7 +6,12 @@ packages:
 scripts:
   analyze:
     run: melos exec -- dart analyze --fatal-infos
-    description: Run static analysis in all packages.
+    description: Run static analysis in pure Dart packages (use run_ci_checks.sh for plugins).
+  analyze:flutter:
+    run: melos exec -- flutter analyze --fatal-infos
+    packageFilters:
+      flutter: true
+    description: Run flutter analyze in plugin packages.
 
   test:
     run: melos exec --fail-fast -- dart test

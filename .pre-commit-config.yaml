@@ -29,6 +29,13 @@ repos:
         pass_filenames: false
         files: ^packages/twilio_flutter_conversations/pigeons/
 
+      - id: pigeon-drift-video
+        name: Pigeon generated code up to date (video)
+        entry: bash -c 'cd packages/twilio_flutter_video && dart run pigeon --input pigeons/video_api.dart && git diff --exit-code lib/src/pigeon/video.pigeon.dart ios/Classes/Pigeon/VideoPigeon.swift android/src/main/kotlin/com/twilioflutter/video/pigeon/VideoPigeon.kt'
+        language: system
+        pass_filenames: false
+        files: ^packages/twilio_flutter_video/pigeons/
+
       - id: dart-analyze-core
         name: dart analyze twilio_flutter_core
         entry: bash -c 'cd packages/twilio_flutter_core && dart analyze --fatal-infos'

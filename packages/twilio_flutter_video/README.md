@@ -1,14 +1,65 @@
 # twilio_flutter_video
 
-Scaffold for a sibling package to `twilio_flutter_conversations` in this monorepo.
+Twilio Programmable Video for Flutter on iOS and Android.
 
-## Status
+Platform views for rendering video tracks are **not** included yet. The snippets below join a room, receive events, and toggle local audio/video.
 
-- Package layout, plugin registration, and shared `twilio_flutter_core` dependency are in place.
-- Pigeon schema, native Twilio Video SDK bridges, and public room APIs are **not** implemented yet.
+**Full guide:** [Consumer guide](../../docs/CONSUMER_GUIDE.md#5-twilio-video-in-your-app).
 
-## Next steps
+## pub.dev
 
-1. Add `specs/002-twilio-flutter-video` (Spec Kit).
-2. Define Pigeon host API (connect room, publish/subscribe tracks, events).
-3. Wire Android/iOS Twilio Video SDKs and CI parity with conversations.
+```yaml
+dependencies:
+  twilio_flutter_video: ^0.1.0
+```
+
+Replace `^0.1.0` with the version on [pub.dev](https://pub.dev/packages/twilio_flutter_video) when published.
+
+## Permissions (before `session.start`)
+
+Missing camera or microphone permission makes native connect throw `sdk_failure`.
+
+```dart
+import 'package:permission_handler/permission_handler.dart';
+
+Future<void> ensureVideoPermissions() async {
+  final statuses = await [Permission.camera, Permission.microphone].request();
+  if (statuses[Permission.camera] != PermissionStatus.granted ||
+      statuses[Permission.microphone] != PermissionStatus.granted) {
+    throw StateError('Camera and microphone are required for video.');
+  }
+}
+```
+
+## Minimal join room
+
+```dart
+import 'package:twilio_flutter_video/twilio_flutter_video.dart';
+
+final TwilioVideoSession session = TwilioVideoSession();
+
+await ensureVideoPermissions();
+
+await session.start(
+  accessToken: tokenFromYourBackend,
+  roomName: 'my-room',
+  onEvent: (TwilioVideoEvent event) {
+    switch (event) {
+      case RoomConnected(:final room):
+        print('In room ${room.sid}');
+      case ParticipantConnected(:final participant):
+        print('Joined: ${participant.identity}');
+      default:
+        break;
+    }
+  },
+);
+
+await session.client.setLocalAudioEnabled(false);
+await session.stop();
+```
+
+## Maintainer docs
+
+- Regenerate Pigeon: `dart run pigeon --input pigeons/video_api.dart`
+- Local CI checks: `../../scripts/run_ci_checks.sh` from repo root

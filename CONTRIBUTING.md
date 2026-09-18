@@ -21,6 +21,14 @@ chmod +x scripts/*.sh
 ./scripts/run_commit_hooks.sh
 ```
 
+Full pipeline (SDD, docs, comment style, pigeon drift, analyze, tests):
+
+```bash
+./scripts/run_ci_checks.sh origin/main
+```
+
+Integrator-facing install and usage docs live in [`docs/CONSUMER_GUIDE.md`](docs/CONSUMER_GUIDE.md). Update that file when you change public Dart API or platform requirements.
+
 ## Add a host method or event (Pigeon workflow)
 
 1. **Schema** — Edit `packages/twilio_flutter_conversations/pigeons/conversations_api.dart` (host API, flutter API, DTOs, enums only).

@@ -1,7 +1,14 @@
 import Flutter
 import UIKit
 
-/// Flutter plugin entry point for Twilio Video (scaffold).
 public class TwilioFlutterVideoPlugin: NSObject, FlutterPlugin {
-  public static func register(with registrar: FlutterPluginRegistrar) {}
+  private var bridge: VideoBridge?
+
+  public static func register(with registrar: FlutterPluginRegistrar) {
+    let bridge = VideoBridge(binaryMessenger: registrar.messenger())
+    TwilioVideoHostApiSetup.setUp(binaryMessenger: registrar.messenger(), api: bridge)
+
+    let instance = TwilioFlutterVideoPlugin()
+    instance.bridge = bridge
+  }
 }

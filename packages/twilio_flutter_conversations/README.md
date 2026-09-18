@@ -1,32 +1,41 @@
 # twilio_flutter_conversations
 
-Typed Flutter wrapper for the Twilio Conversations SDK.
+Twilio Conversations (classic) for Flutter on iOS and Android.
 
-**Full integrator documentation** (setup, lifecycle, events, attributes, doc links, Video monorepo plan): [repository README](../../README.md) and [ARCHITECTURE.md](../../docs/ARCHITECTURE.md).
+**Install and usage (pub.dev, tokens, platform setup, copy-paste samples):** [Consumer guide](../../docs/CONSUMER_GUIDE.md#4-twilio-conversations-in-your-app).
 
-## Quick API (recommended)
+## pub.dev
+
+```yaml
+dependencies:
+  twilio_flutter_conversations: ^0.1.0
+```
+
+Replace `^0.1.0` with the version on [pub.dev](https://pub.dev/packages/twilio_flutter_conversations) when published.
+
+## Minimal connect
 
 ```dart
-final chatSession = TwilioConversationsSession();
+import 'package:twilio_flutter_conversations/twilio_flutter_conversations.dart';
+
+final TwilioConversationsSession chatSession = TwilioConversationsSession();
 
 await chatSession.start(
   accessToken: tokenFromYourBackend,
-  onEvent: (event) { /* sync, messages, token lifecycle */ },
+  onEvent: (TwilioConversationsEvent event) {
+    // ClientSynchronizationStatusUpdated, MessageAdded, TokenExpired, …
+  },
 );
 
 await chatSession.client.sendMessage(
-  conversationSid: sid,
+  conversationSid: 'CHxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
   body: 'Hello',
-  attributes: {'kind': 'status', 'level': 1},
 );
 
-await chatSession.stop(); // or chatSession.dispose() when tearing down the feature
+await chatSession.stop();
 ```
 
-Low-level API: [`TwilioConversationsClient`](lib/src/client/twilio_conversations_client.dart). See [QUICKSTART.md](../../docs/QUICKSTART.md) and [MEDIA_SUPPORT.md](../../docs/MEDIA_SUPPORT.md).
+## Maintainer docs
 
-## Pigeon
-
-```bash
-dart run pigeon --input pigeons/conversations_api.dart
-```
+- Regenerate Pigeon: `dart run pigeon --input pigeons/conversations_api.dart`
+- Local CI checks: `../../scripts/run_ci_checks.sh` from repo root

@@ -1,6 +1,8 @@
-# Integrator quickstart
+# Integrator quickstart (Conversations)
 
-Copy-paste oriented flow for a single user identity in your Flutter app.
+For pub.dev install, Android/iOS setup, and Video in the same app, start with **[CONSUMER_GUIDE.md](CONSUMER_GUIDE.md)**.
+
+Copy-paste flow for a single user identity in your Flutter app.
 
 ## 1. Backend (required)
 
@@ -12,9 +14,10 @@ Ensure the user is a **participant** in at least one conversation ([REST API](ht
 
 ```yaml
 dependencies:
-  twilio_flutter_conversations:
-    path: ../packages/twilio_flutter_conversations
+  twilio_flutter_conversations: ^0.1.0
 ```
+
+(Git/path install options are in [CONSUMER_GUIDE.md](CONSUMER_GUIDE.md#1-add-dependencies).)
 
 Run `pod install` in your app `ios/` directory after the first `flutter pub get`.
 

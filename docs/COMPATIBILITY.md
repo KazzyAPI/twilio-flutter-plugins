@@ -13,11 +13,15 @@ Use the repo [`.flutter-version`](../.flutter-version) (currently **3.47.4**) wi
 | Twilio Conversations iOS | **~> 4.0** (`ios/twilio_flutter_conversations.podspec`) | https://www.twilio.com/docs/conversations-classic/ios/changelog |
 | Android min SDK | 21 | Twilio Conversations requirement |
 | iOS deployment target | 13.0 | Podspec |
+| Twilio Video Android | **7.10.4** (`packages/twilio_flutter_video/android/build.gradle`) | https://www.twilio.com/docs/video/changelog |
+| Twilio Video iOS | **~> 5.8** (`packages/twilio_flutter_video/ios/twilio_flutter_video.podspec`) | https://www.twilio.com/docs/video/ios |
 
 ## API reference URLs (match pinned majors)
 
 - Android 6.2.x: https://media.twiliocdn.com/sdk/android/conversations/releases/6.2.0/docs/convo-android/
 - iOS 4.x: https://media.twiliocdn.com/sdk/ios/conversations/latest/docs (verify against your resolved pod version in `Podfile.lock`)
+- Android Video 7.x: https://twilio.github.io/twilio-video-android/docs/latest/
+- iOS Video 5.x: https://twilio.github.io/twilio-video-ios/docs/latest/
 
 ## Upgrade checklist
 

@@ -64,4 +64,21 @@ Maps **Twilio Conversations classic mobile SDK** capabilities to this plugin. **
 
 See [CONVERSATIONS_SDK_COVERAGE.md](CONVERSATIONS_SDK_COVERAGE.md) for listener ↔ event mapping and REST boundaries.
 
-When adding a row, update this file, `EVENT_CATALOG.md`, and `specs/001-twilio-flutter-conversations/sdd-api-surface.txt` in the same change set.
+When adding a row, update this file, `EVENT_CATALOG.md`, and the active feature `sdd-api-surface.txt` in the same change set.
+
+## Programmable Video (`twilio_flutter_video`)
+
+| Capability | Status | Dart API |
+| --- | --- | --- |
+| Connect to room (token + room name) | Supported | `connect`, `TwilioVideoSession.start` |
+| Disconnect | Supported | `disconnect`, `stop`, `dispose` |
+| Local audio/video toggle | Supported | `setLocalAudioEnabled`, `setLocalVideoEnabled` |
+| Room connected / disconnected | Supported | `RoomConnected`, `RoomDisconnected` |
+| Reconnecting / reconnected | Supported | `RoomReconnecting`, `RoomReconnected` |
+| Remote participant join/leave | Supported | `ParticipantConnected`, `ParticipantDisconnected` |
+| Dominant speaker | Supported | `DominantSpeakerChanged` |
+| SDK errors (event + host throws) | Supported | `VideoError`, `TwilioFlutterException` |
+| Local/remote video rendering | Planned | Platform views (not in v0.0.1) |
+| Screen share, data tracks | Planned | Follow-up host APIs |
+
+Quickstart: [VIDEO_QUICKSTART.md](VIDEO_QUICKSTART.md). Spec: `specs/002-twilio-flutter-video/`.

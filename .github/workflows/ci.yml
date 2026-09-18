@@ -76,6 +76,14 @@ jobs:
         run: flutter pub get
         working-directory: packages/twilio_flutter_video
 
+      - name: Verify video pigeon output is up to date
+        run: |
+          dart run pigeon --input pigeons/video_api.dart
+          git diff --exit-code lib/src/pigeon/video.pigeon.dart \
+            ios/Classes/Pigeon/VideoPigeon.swift \
+            android/src/main/kotlin/com/twilioflutter/video/pigeon/VideoPigeon.kt
+        working-directory: packages/twilio_flutter_video
+
       - name: Analyze video
         run: flutter analyze --fatal-infos
         working-directory: packages/twilio_flutter_video

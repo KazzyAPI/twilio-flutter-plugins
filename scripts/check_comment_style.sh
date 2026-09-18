@@ -13,6 +13,10 @@ if rg -n --pcre2 "$PATTERN" \
   packages/twilio_flutter_conversations/pigeons \
   packages/twilio_flutter_conversations/android/src/main/kotlin \
   packages/twilio_flutter_conversations/ios/Classes \
+  packages/twilio_flutter_video/lib \
+  packages/twilio_flutter_video/pigeons \
+  packages/twilio_flutter_video/android/src/main/kotlin \
+  packages/twilio_flutter_video/ios/Classes \
   2>/dev/null; then
   echo "Comment style check failed: remove 'high level' phrasing; describe function intent instead."
   exit 1
