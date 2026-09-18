@@ -22,7 +22,7 @@ final class ConversationsBridge: NSObject {
     if client != nil || isConnectInFlight {
       completion(
         .failure(
-          FlutterError(
+          PigeonError(
             code: "already_connected",
             message: "Twilio Conversations client is already connected.",
             details: nil
@@ -60,7 +60,7 @@ final class ConversationsBridge: NSObject {
       let message = result.error?.localizedDescription ?? "Failed to connect Conversations client"
       completion(
         .failure(
-          FlutterError(
+          PigeonError(
             code: "sdk_failure",
             message: message,
             details: nil
@@ -90,7 +90,7 @@ final class ConversationsBridge: NSObject {
     guard let activeClient = client else {
       completion(
         .failure(
-          FlutterError(
+          PigeonError(
             code: "not_connected",
             message: "Connect before updating the access token.",
             details: nil
@@ -108,7 +108,7 @@ final class ConversationsBridge: NSObject {
 
       completion(
         .failure(
-          FlutterError(
+          PigeonError(
             code: "sdk_failure",
             message: result.error?.localizedDescription ?? "Failed to update access token",
             details: nil
@@ -154,7 +154,7 @@ final class ConversationsBridge: NSObject {
         guard let sid = conversation.sid else {
           completion(
             .failure(
-              FlutterError(
+              PigeonError(
                 code: "internal",
                 message: "Conversation missing SID.",
                 details: nil
@@ -176,7 +176,7 @@ final class ConversationsBridge: NSObject {
 
           completion(
             .failure(
-              FlutterError(
+              PigeonError(
                 code: "sdk_failure",
                 message: fetchResult.error?.localizedDescription ?? "Failed to load messages",
                 details: nil
@@ -201,14 +201,14 @@ final class ConversationsBridge: NSObject {
         guard let sid = conversation.sid else {
           completion(
             .failure(
-              FlutterError(code: "internal", message: "Conversation missing SID.", details: nil)
+              PigeonError(code: "internal", message: "Conversation missing SID.", details: nil)
             )
           )
           return
         }
 
         conversation.getMessagesBefore(
-          request.beforeMessageIndex,
+          UInt(truncatingIfNeeded: request.beforeMessageIndex),
           withCount: count
         ) { fetchResult, messages in
           if let messages {
@@ -220,7 +220,7 @@ final class ConversationsBridge: NSObject {
 
           completion(
             .failure(
-              FlutterError(
+              PigeonError(
                 code: "sdk_failure",
                 message: fetchResult.error?.localizedDescription ?? "Failed to load messages",
                 details: nil
@@ -244,7 +244,7 @@ final class ConversationsBridge: NSObject {
         guard let sid = conversation.sid else {
           completion(
             .failure(
-              FlutterError(code: "internal", message: "Conversation missing SID.", details: nil)
+              PigeonError(code: "internal", message: "Conversation missing SID.", details: nil)
             )
           )
           return
@@ -254,7 +254,7 @@ final class ConversationsBridge: NSObject {
         guard FileManager.default.fileExists(atPath: fileUrl.path) else {
           completion(
             .failure(
-              FlutterError(
+              PigeonError(
                 code: "invalid_argument",
                 message: "filePath must point to a readable file.",
                 details: nil
@@ -270,7 +270,7 @@ final class ConversationsBridge: NSObject {
         } catch {
           completion(
             .failure(
-              FlutterError(
+              PigeonError(
                 code: "invalid_argument",
                 message: "Could not read file at filePath.",
                 details: error.localizedDescription
@@ -288,7 +288,7 @@ final class ConversationsBridge: NSObject {
           if let error = Self.applyAttributesJson(attributesJson, to: preparedMessage) {
             completion(
               .failure(
-                FlutterError(
+                PigeonError(
                   code: "invalid_argument",
                   message: error.localizedDescription,
                   details: nil
@@ -316,7 +316,7 @@ final class ConversationsBridge: NSObject {
           }
           completion(
             .failure(
-              FlutterError(
+              PigeonError(
                 code: "sdk_failure",
                 message: sendResult.error?.localizedDescription ?? "Failed to send media message",
                 details: nil
@@ -337,11 +337,13 @@ final class ConversationsBridge: NSObject {
     resolveConversation(sidOrUniqueName: request.conversationSid) { result in
       switch result {
       case .success(let conversation):
-        conversation.message(withIndex: request.messageIndex) { fetchResult, message in
+        conversation.message(withIndex: NSNumber(value: request.messageIndex)) {
+          fetchResult,
+          message in
           guard let message else {
             completion(
               .failure(
-                FlutterError(
+                PigeonError(
                   code: "sdk_failure",
                   message: fetchResult.error?.localizedDescription ?? "Message not found",
                   details: nil
@@ -358,7 +360,7 @@ final class ConversationsBridge: NSObject {
           else {
             completion(
               .failure(
-                FlutterError(
+                PigeonError(
                   code: "invalid_argument",
                   message: "Media not found on message.",
                   details: nil
@@ -371,7 +373,7 @@ final class ConversationsBridge: NSObject {
           guard let activeClient = self.client else {
             completion(
               .failure(
-                FlutterError(
+                PigeonError(
                   code: "not_connected",
                   message: "Connect before accessing media URLs.",
                   details: nil
@@ -389,7 +391,7 @@ final class ConversationsBridge: NSObject {
             }
             completion(
               .failure(
-                FlutterError(
+                PigeonError(
                   code: "sdk_failure",
                   message: urlResult.error?.localizedDescription ?? "Failed to get media URL",
                   details: nil
@@ -414,7 +416,7 @@ final class ConversationsBridge: NSObject {
         guard let sid = conversation.sid else {
           completion(
             .failure(
-              FlutterError(
+              PigeonError(
                 code: "internal",
                 message: "Conversation missing SID.",
                 details: nil
@@ -445,21 +447,8 @@ final class ConversationsBridge: NSObject {
     resolveConversation(sidOrUniqueName: request.conversationSid) { result in
       switch result {
       case .success(let conversation):
-        conversation.sendTyping { sendResult in
-          if sendResult.isSuccessful {
-            completion(.success(()))
-            return
-          }
-          completion(
-            .failure(
-              FlutterError(
-                code: "sdk_failure",
-                message: sendResult.error?.localizedDescription ?? "Failed to send typing indicator",
-                details: nil
-              )
-            )
-          )
-        }
+        conversation.typing()
+        completion(.success(()))
       case .failure(let error):
         completion(.failure(error))
       }
@@ -476,7 +465,7 @@ final class ConversationsBridge: NSObject {
         guard let sid = conversation.sid else {
           completion(
             .failure(
-              FlutterError(
+              PigeonError(
                 code: "internal",
                 message: "Conversation missing SID.",
                 details: nil
@@ -493,7 +482,7 @@ final class ConversationsBridge: NSObject {
           if let error = Self.applyAttributesJson(attributesJson, to: preparedMessage) {
             completion(
               .failure(
-                FlutterError(
+                PigeonError(
                   code: "invalid_argument",
                   message: error.localizedDescription,
                   details: nil
@@ -516,7 +505,7 @@ final class ConversationsBridge: NSObject {
 
           completion(
             .failure(
-              FlutterError(
+              PigeonError(
                 code: "sdk_failure",
                 message: sendResult.error?.localizedDescription ?? "Failed to send message",
                 details: nil
@@ -543,7 +532,7 @@ final class ConversationsBridge: NSObject {
   ) -> Error? {
     do {
       let attributes = try MessageAttributesJson.attributes(fromJson: attributesJson)
-      var error: NSError?
+      var error: TCHError?
       _ = builder.setAttributes(attributes, error: &error)
       if let error {
         return error
@@ -556,7 +545,7 @@ final class ConversationsBridge: NSObject {
 
   private func notConnectedFailure() -> Result<[ConversationDto], Error> {
     .failure(
-      FlutterError(
+      PigeonError(
         code: "not_connected",
         message: "Connect before accessing conversations.",
         details: nil
@@ -571,7 +560,7 @@ final class ConversationsBridge: NSObject {
     guard let activeClient = client else {
       completion(
         .failure(
-          FlutterError(
+          PigeonError(
             code: "not_connected",
             message: "Connect before accessing conversations.",
             details: nil
@@ -592,7 +581,7 @@ final class ConversationsBridge: NSObject {
       guard result.isSuccessful, let conversation else {
         completion(
           .failure(
-            FlutterError(
+            PigeonError(
               code: "sdk_failure",
               message: result.error?.localizedDescription ?? "Conversation not found",
               details: nil

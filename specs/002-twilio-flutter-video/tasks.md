@@ -22,5 +22,6 @@ Feature: `specs/002-twilio-flutter-video`
 - [x] CI: iOS message fetch APIs use Int indices/counts (not NSNumber)
 - [x] CI: MessageBuilder + TCHJsonAttributes Swift names (partial TCH prefix drops in SDK 4.x)
 - [x] CI: iOS ConversationDto `lastMessageIndex` as Int64; `TCHJsonAttributes` for attribute JSON
+- [x] CI: iOS bridge uses PigeonError, `typing()`, NSNumber message indices, TCHError on setAttributes
 - [ ] P2: Platform views for video rendering (future)
 - [ ] Example app + device E2E (future)
