@@ -1,3 +1,4 @@
+import Flutter
 import Foundation
 
 /// Sends canonical conversation events from iOS to Dart.

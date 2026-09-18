@@ -7,7 +7,6 @@ final class ConversationsBridge: NSObject {
   private let eventEmitter: ConversationsEventEmitter
   private let eventMapper = ConversationsEventMapper()
   private var client: TwilioConversationsClient?
-  private var conversationListeners: [String: ConversationListenerToken] = [:]
   private var connectGeneration: Int = 0
   private var isConnectInFlight: Bool = false
 
@@ -54,9 +53,6 @@ final class ConversationsBridge: NSObject {
       self.isConnectInFlight = false
       if let conversationsClient {
         self.client = conversationsClient
-        conversationsClient.myConversations()?.forEach { conversation in
-          self.registerConversationListener(conversation)
-        }
         completion(.success(()))
         return
       }
@@ -84,7 +80,6 @@ final class ConversationsBridge: NSObject {
     activeClient.delegate = nil
     activeClient.shutdown()
     client = nil
-    conversationListeners.removeAll()
     completion(.success(()))
   }
 
@@ -548,7 +543,6 @@ final class ConversationsBridge: NSObject {
     client?.delegate = nil
     client?.shutdown()
     client = nil
-    conversationListeners.removeAll()
   }
 
   private func notConnectedFailure() -> Result<[ConversationDto], Error> {
@@ -579,7 +573,6 @@ final class ConversationsBridge: NSObject {
     }
 
     if let conversation = activeClient.conversation(withSidOrUniqueName: sidOrUniqueName) {
-      registerConversationListener(conversation)
       completion(.success(conversation))
       return
     }
@@ -600,21 +593,8 @@ final class ConversationsBridge: NSObject {
     isConnectInFlight = false
   }
 
-  private func registerConversationListener(_ conversation: TCHConversation) {
-    guard let sid = conversation.sid else {
-      return
-    }
-
-    if conversationListeners[sid] != nil {
-      return
-    }
-
-    let token = ConversationListenerToken(
-      conversation: conversation,
-      eventMapper: eventMapper,
-      eventEmitter: eventEmitter
-    )
-    conversationListeners[sid] = token
+  private func conversationSid(_ conversation: TCHConversation) -> String {
+    conversation.sid ?? ""
   }
 }
 
@@ -634,25 +614,21 @@ extension ConversationsBridge: TwilioConversationsClientDelegate {
   }
 
   func conversationsClient(_ client: TwilioConversationsClient, conversationAdded conversation: TCHConversation) {
-    registerConversationListener(conversation)
     eventEmitter.emit(event: eventMapper.conversationAddedEvent(conversation))
   }
 
   func conversationsClient(
     _ client: TwilioConversationsClient,
-    conversationUpdated conversation: TCHConversation,
-    reason: TCHConversationUpdateReason
+    conversation: TCHConversation,
+    updated: TCHConversationUpdate
   ) {
-    eventEmitter.emit(event: eventMapper.conversationUpdatedEvent(conversation, reason: reason))
+    eventEmitter.emit(event: eventMapper.conversationUpdatedEvent(conversation, updated: updated))
   }
 
   func conversationsClient(
     _ client: TwilioConversationsClient,
     conversationDeleted conversation: TCHConversation
   ) {
-    if let sid = conversation.sid {
-      conversationListeners.removeValue(forKey: sid)
-    }
     eventEmitter.emit(event: eventMapper.conversationDeletedEvent(conversation))
   }
 
@@ -684,9 +660,9 @@ extension ConversationsBridge: TwilioConversationsClientDelegate {
   func conversationsClient(
     _ client: TwilioConversationsClient,
     user: TCHUser,
-    updated reason: TCHUserUpdateReason
+    updated: TCHUserUpdate
   ) {
-    eventEmitter.emit(event: eventMapper.userUpdatedEvent(user, reason: reason))
+    eventEmitter.emit(event: eventMapper.userUpdatedEvent(user, updated: updated))
   }
 
   func conversationsClient(_ client: TwilioConversationsClient, userSubscribed user: TCHUser) {
@@ -700,114 +676,106 @@ extension ConversationsBridge: TwilioConversationsClientDelegate {
   func conversationsClientNotificationSubscribed(_ client: TwilioConversationsClient) {
     eventEmitter.emit(event: eventMapper.notificationSubscribedEvent())
   }
-}
 
-/// Retains conversation delegate callbacks for the lifetime of the bridge.
-private final class ConversationListenerToken {
-  private let delegate: ConversationDelegateProxy
-
-  init(
+  func conversationsClient(
+    _ client: TwilioConversationsClient,
     conversation: TCHConversation,
-    eventMapper: ConversationsEventMapper,
-    eventEmitter: ConversationsEventEmitter
+    messageAdded message: TCHMessage
   ) {
-    delegate = ConversationDelegateProxy(
-      conversation: conversation,
-      eventMapper: eventMapper,
-      eventEmitter: eventEmitter
-    )
-    conversation.delegate = delegate
-  }
-}
-
-private final class ConversationDelegateProxy: NSObject, TCHConversationDelegate {
-  private let conversationSid: String
-  private let eventMapper: ConversationsEventMapper
-  private let eventEmitter: ConversationsEventEmitter
-
-  init(
-    conversation: TCHConversation,
-    eventMapper: ConversationsEventMapper,
-    eventEmitter: ConversationsEventEmitter
-  ) {
-    conversationSid = conversation.sid ?? ""
-    self.eventMapper = eventMapper
-    self.eventEmitter = eventEmitter
-    super.init()
-  }
-
-  func conversation(_ conversation: TCHConversation, messageAdded message: TCHMessage) {
     eventEmitter.emit(
-      event: eventMapper.messageAddedEvent(message, conversationSid: conversationSid)
+      event: eventMapper.messageAddedEvent(message, conversationSid: conversationSid(conversation))
     )
   }
 
-  func conversation(
-    _ conversation: TCHConversation,
+  func conversationsClient(
+    _ client: TwilioConversationsClient,
+    conversation: TCHConversation,
     message: TCHMessage,
-    updated reason: TCHMessageUpdateReason
+    updated: TCHMessageUpdate
   ) {
     eventEmitter.emit(
-      event: eventMapper.messageUpdatedEvent(message, conversationSid: conversationSid, reason: reason)
-    )
-  }
-
-  func conversation(_ conversation: TCHConversation, messageDeleted message: TCHMessage) {
-    eventEmitter.emit(
-      event: eventMapper.messageDeletedEvent(message, conversationSid: conversationSid)
-    )
-  }
-
-  func conversation(_ conversation: TCHConversation, participantJoined participant: TCHParticipant) {
-    eventEmitter.emit(
-      event: eventMapper.participantAddedEvent(participant, conversationSid: conversationSid)
-    )
-  }
-
-  func conversation(_ conversation: TCHConversation, participantLeft participant: TCHParticipant) {
-    eventEmitter.emit(
-      event: eventMapper.participantDeletedEvent(participant, conversationSid: conversationSid)
-    )
-  }
-
-  func conversation(
-    _ conversation: TCHConversation,
-    participant: TCHParticipant,
-    updated reason: TCHParticipantUpdateReason
-  ) {
-    eventEmitter.emit(
-      event: eventMapper.participantUpdatedEvent(
-        participant,
-        conversationSid: conversationSid,
-        reason: reason
+      event: eventMapper.messageUpdatedEvent(
+        message,
+        conversationSid: conversationSid(conversation),
+        updated: updated
       )
     )
   }
 
-  func conversation(
-    _ conversation: TCHConversation,
-    typingStartedOn conversation2: TCHConversation,
-    participant: TCHParticipant
+  func conversationsClient(
+    _ client: TwilioConversationsClient,
+    conversation: TCHConversation,
+    messageDeleted message: TCHMessage
   ) {
     eventEmitter.emit(
-      event: eventMapper.typingStartedEvent(participant, conversationSid: conversationSid)
+      event: eventMapper.messageDeletedEvent(message, conversationSid: conversationSid(conversation))
     )
   }
 
-  func conversation(
-    _ conversation: TCHConversation,
-    typingEndedOn conversation2: TCHConversation,
-    participant: TCHParticipant
+  func conversationsClient(
+    _ client: TwilioConversationsClient,
+    conversation: TCHConversation,
+    participantJoined participant: TCHParticipant
   ) {
     eventEmitter.emit(
-      event: eventMapper.typingEndedEvent(participant, conversationSid: conversationSid)
+      event: eventMapper.participantAddedEvent(
+        participant,
+        conversationSid: conversationSid(conversation)
+      )
     )
   }
 
-  func conversation(
-    _ conversation: TCHConversation,
-    synchronizationStatusUpdated status: TCHConversationSynchronizationStatus
+  func conversationsClient(
+    _ client: TwilioConversationsClient,
+    conversation: TCHConversation,
+    participantLeft participant: TCHParticipant
   ) {
-    eventEmitter.emit(event: eventMapper.conversationSynchronizationEvent(conversation))
+    eventEmitter.emit(
+      event: eventMapper.participantDeletedEvent(
+        participant,
+        conversationSid: conversationSid(conversation)
+      )
+    )
+  }
+
+  func conversationsClient(
+    _ client: TwilioConversationsClient,
+    conversation: TCHConversation,
+    participant: TCHParticipant,
+    updated: TCHParticipantUpdate
+  ) {
+    eventEmitter.emit(
+      event: eventMapper.participantUpdatedEvent(
+        participant,
+        conversationSid: conversationSid(conversation),
+        updated: updated
+      )
+    )
+  }
+
+  func conversationsClient(
+    _ client: TwilioConversationsClient,
+    typingStartedOnConversation conversation: TCHConversation,
+    participant: TCHParticipant
+  ) {
+    eventEmitter.emit(
+      event: eventMapper.typingStartedEvent(
+        participant,
+        conversationSid: conversationSid(conversation)
+      )
+    )
+  }
+
+  func conversationsClient(
+    _ client: TwilioConversationsClient,
+    typingEndedOnConversation conversation: TCHConversation,
+    participant: TCHParticipant
+  ) {
+    eventEmitter.emit(
+      event: eventMapper.typingEndedEvent(
+        participant,
+        conversationSid: conversationSid(conversation)
+      )
+    )
   }
 }

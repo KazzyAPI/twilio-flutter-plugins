@@ -149,7 +149,7 @@ final class ConversationsEventMapper {
 
   func conversationUpdatedEvent(
     _ conversation: TCHConversation,
-    reason: TCHConversationUpdateReason
+    updated: TCHConversationUpdate
   ) -> ConversationsNativeEvent {
     return ConversationsNativeEvent(
       type: .conversationUpdated,
@@ -160,7 +160,7 @@ final class ConversationsEventMapper {
       message: nil,
       participant: nil,
       user: nil,
-      updateReason: String(describing: reason),
+      updateReason: String(describing: updated),
       errorCode: nil,
       errorMessage: nil
     )
@@ -224,7 +224,7 @@ final class ConversationsEventMapper {
   func messageUpdatedEvent(
     _ message: TCHMessage,
     conversationSid: String,
-    reason: TCHMessageUpdateReason
+    updated: TCHMessageUpdate
   ) -> ConversationsNativeEvent {
     return ConversationsNativeEvent(
       type: .messageUpdated,
@@ -235,7 +235,7 @@ final class ConversationsEventMapper {
       message: mapMessage(message, conversationSid: conversationSid),
       participant: nil,
       user: nil,
-      updateReason: String(describing: reason),
+      updateReason: String(describing: updated),
       errorCode: nil,
       errorMessage: nil
     )
@@ -282,7 +282,7 @@ final class ConversationsEventMapper {
   func participantUpdatedEvent(
     _ participant: TCHParticipant,
     conversationSid: String,
-    reason: TCHParticipantUpdateReason
+    updated: TCHParticipantUpdate
   ) -> ConversationsNativeEvent {
     return ConversationsNativeEvent(
       type: .participantUpdated,
@@ -293,7 +293,7 @@ final class ConversationsEventMapper {
       message: nil,
       participant: mapParticipant(participant, conversationSid: conversationSid),
       user: nil,
-      updateReason: String(describing: reason),
+      updateReason: String(describing: updated),
       errorCode: nil,
       errorMessage: nil
     )
@@ -356,7 +356,7 @@ final class ConversationsEventMapper {
     )
   }
 
-  func userUpdatedEvent(_ user: TCHUser, reason: TCHUserUpdateReason) -> ConversationsNativeEvent {
+  func userUpdatedEvent(_ user: TCHUser, updated: TCHUserUpdate) -> ConversationsNativeEvent {
     return ConversationsNativeEvent(
       type: .userUpdated,
       synchronizationStatus: nil,
@@ -366,7 +366,7 @@ final class ConversationsEventMapper {
       message: nil,
       participant: nil,
       user: mapUser(user),
-      updateReason: String(describing: reason),
+      updateReason: String(describing: updated),
       errorCode: nil,
       errorMessage: nil
     )
