@@ -22,14 +22,13 @@ import java.io.FileInputStream
 import com.twilioflutter.conversations.pigeon.MessageDto
 import com.twilioflutter.conversations.pigeon.ParticipantDto
 import com.twilioflutter.conversations.pigeon.SendMessageRequest
-import com.twilioflutter.conversations.pigeon.TwilioConversationsHostApi
 import io.flutter.plugin.common.BinaryMessenger
 
 /** Host-side bridge between Twilio Conversations SDK and Flutter pigeon APIs. */
 class ConversationsBridge(
   context: Context,
   binaryMessenger: BinaryMessenger,
-) : TwilioConversationsHostApi {
+) {
   private val applicationContext = context.applicationContext
   private val eventEmitter = ConversationsEventEmitter(binaryMessenger)
   private val eventMapper = ConversationsEventMapper()
@@ -122,7 +121,7 @@ class ConversationsBridge(
       }
     }
 
-  override fun connect(request: ConnectRequest, callback: (Result<Unit>) -> Unit) {
+  fun connect(request: ConnectRequest, callback: (Result<Unit>) -> Unit) {
     if (client != null || connectSessionGuard.isConnectInFlight()) {
       callback(
         Result.failure(
@@ -189,7 +188,7 @@ class ConversationsBridge(
     )
   }
 
-  override fun disconnect(callback: (Result<Unit>) -> Unit) {
+  fun disconnect(callback: (Result<Unit>) -> Unit) {
     invalidatePendingConnect()
     val activeClient = client
     if (activeClient == null) {
@@ -206,7 +205,7 @@ class ConversationsBridge(
     callback(Result.success(Unit))
   }
 
-  override fun updateAccessToken(accessToken: String, callback: (Result<Unit>) -> Unit) {
+  fun updateAccessToken(accessToken: String, callback: (Result<Unit>) -> Unit) {
     val activeClient = client
     if (activeClient == null) {
       callback(
@@ -243,7 +242,7 @@ class ConversationsBridge(
     )
   }
 
-  override fun listConversations(callback: (Result<List<ConversationDto>>) -> Unit) {
+  fun listConversations(callback: (Result<List<ConversationDto>>) -> Unit) {
     val activeClient = client
     if (activeClient == null) {
       callback(
@@ -267,7 +266,7 @@ class ConversationsBridge(
     )
   }
 
-  override fun getConversation(
+  fun getConversation(
     sidOrUniqueName: String,
     callback: (Result<ConversationDto>) -> Unit,
   ) {
@@ -280,7 +279,7 @@ class ConversationsBridge(
     )
   }
 
-  override fun getLastMessages(
+  fun getLastMessages(
     request: GetMessagesRequest,
     callback: (Result<List<MessageDto>>) -> Unit,
   ) {
@@ -319,7 +318,7 @@ class ConversationsBridge(
     )
   }
 
-  override fun getMessagesBefore(
+  fun getMessagesBefore(
     request: GetMessagesBeforeRequest,
     callback: (Result<List<MessageDto>>) -> Unit,
   ) {
@@ -359,7 +358,7 @@ class ConversationsBridge(
     )
   }
 
-  override fun sendMediaMessage(
+  fun sendMediaMessage(
     request: SendMediaMessageRequest,
     callback: (Result<MessageDto>) -> Unit,
   ) {
@@ -464,7 +463,7 @@ class ConversationsBridge(
     )
   }
 
-  override fun getMediaTemporaryUrl(
+  fun getMediaTemporaryUrl(
     request: GetMediaTemporaryUrlRequest,
     callback: (Result<String>) -> Unit,
   ) {
@@ -531,7 +530,7 @@ class ConversationsBridge(
     )
   }
 
-  override fun getParticipants(
+  fun getParticipants(
     request: ConversationRequest,
     callback: (Result<List<ParticipantDto>>) -> Unit,
   ) {
@@ -550,7 +549,7 @@ class ConversationsBridge(
     )
   }
 
-  override fun sendTyping(
+  fun sendTyping(
     request: ConversationRequest,
     callback: (Result<Unit>) -> Unit,
   ) {
@@ -564,7 +563,7 @@ class ConversationsBridge(
     )
   }
 
-  override fun sendMessage(
+  fun sendMessage(
     request: SendMessageRequest,
     callback: (Result<MessageDto>) -> Unit,
   ) {

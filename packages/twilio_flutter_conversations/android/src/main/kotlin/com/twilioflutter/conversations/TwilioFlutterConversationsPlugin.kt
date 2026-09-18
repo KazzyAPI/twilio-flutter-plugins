@@ -1,6 +1,7 @@
 package com.twilioflutter.conversations
 
 import com.twilioflutter.conversations.bridge.ConversationsBridge
+import com.twilioflutter.conversations.bridge.ConversationsBridgeHostAdapter
 import com.twilioflutter.conversations.pigeon.TwilioConversationsHostApi
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 
@@ -15,7 +16,10 @@ class TwilioFlutterConversationsPlugin : FlutterPlugin {
         binaryMessenger = binding.binaryMessenger,
       )
     bridge = conversationsBridge
-    TwilioConversationsHostApi.setUp(binding.binaryMessenger, conversationsBridge)
+    TwilioConversationsHostApi.setUp(
+      binding.binaryMessenger,
+      ConversationsBridgeHostAdapter(conversationsBridge),
+    )
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {

@@ -14,6 +14,10 @@
 2. iOS: `VideoBridge` using `TwilioVideo`, `Room.connect`, `RoomDelegate`, local tracks.
 3. Wire plugins to pigeon host setup and flutter API.
 
+## Shared CI (monorepo)
+
+Conversations Android uses `ConversationsBridgeHostAdapter` so Pigeon 29 suspend host APIs compile; example iOS deployment target matches podspec (13.0).
+
 ## Phase 3 — Docs and CI
 
 1. `docs/VIDEO_QUICKSTART.md`, Video rows in `docs/API_COVERAGE.md` and `docs/COMPATIBILITY.md`.

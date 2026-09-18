@@ -23,6 +23,8 @@ App (Dart)
                       └─ Twilio Conversations SDK
 ```
 
+On Android, Pigeon 29 exposes **suspend** host methods; `ConversationsBridgeHostAdapter` wraps the callback-based `ConversationsBridge` for the generated `TwilioConversationsHostApi`.
+
 ## DRY rules
 
 1. **DTO → Dart models:** `PigeonDtoMapper` only (never duplicate field mapping in the client and event mapper).
