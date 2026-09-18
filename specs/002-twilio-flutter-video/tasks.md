@@ -18,5 +18,6 @@ Feature: `specs/002-twilio-flutter-video`
 - [x] CI: iOS async conversation lookup and `Set` for temporary media URLs
 - [x] CI: iOS message builder attributes/media APIs and non-optional attachedMedia
 - [x] CI: iOS JsonAttributes rename and message index optional handling
+- [x] CI: resilient client sync enum mapping; upload ios-build.log artifact on failure
 - [ ] P2: Platform views for video rendering (future)
 - [ ] Example app + device E2E (future)

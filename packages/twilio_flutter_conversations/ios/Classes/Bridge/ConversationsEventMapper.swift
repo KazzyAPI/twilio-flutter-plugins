@@ -9,13 +9,15 @@ final class ConversationsEventMapper {
     switch status {
     case .started:
       return .started
-    case .conversationsListCompleted:
-      return .conversationsListCompleted
     case .completed:
       return .completed
     case .failed:
       return .failed
     default:
+      let description = String(describing: status).lowercased()
+      if description.contains("conversation") && description.contains("complet") {
+        return .conversationsListCompleted
+      }
       return .unknown
     }
   }

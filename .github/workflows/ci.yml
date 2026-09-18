@@ -139,5 +139,15 @@ jobs:
         working-directory: packages/twilio_flutter_conversations/example
 
       - name: Build iOS (simulator, no codesign)
-        run: flutter build ios --simulator --no-codesign
+        run: |
+          set -o pipefail
+          flutter build ios --simulator --no-codesign -v 2>&1 | tee ios-build.log
         working-directory: packages/twilio_flutter_conversations/example
+
+      - name: Upload iOS build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build-log
+          path: packages/twilio_flutter_conversations/example/ios-build.log
+          if-no-files-found: ignore
