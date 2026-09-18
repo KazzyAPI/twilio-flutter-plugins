@@ -147,7 +147,7 @@ final class ConversationsBridge: NSObject {
     request: GetMessagesRequest,
     completion: @escaping (Result<[MessageDto], Error>) -> Void
   ) {
-    let count = max(1, min(request.count, 100))
+    let count = Self.clampedMessageCount(request.count)
     resolveConversation(sidOrUniqueName: request.conversationSid) { result in
       switch result {
       case .success(let conversation):
@@ -194,7 +194,7 @@ final class ConversationsBridge: NSObject {
     request: GetMessagesBeforeRequest,
     completion: @escaping (Result<[MessageDto], Error>) -> Void
   ) {
-    let count = max(1, min(request.count, 100))
+    let count = Self.clampedMessageCount(request.count)
     resolveConversation(sidOrUniqueName: request.conversationSid) { result in
       switch result {
       case .success(let conversation):
@@ -300,7 +300,7 @@ final class ConversationsBridge: NSObject {
         }
 
         preparedMessage.addMedia(
-          withData: data,
+          data: data,
           contentType: request.mimeType,
           filename: request.filename,
           listener: nil
@@ -386,7 +386,7 @@ final class ConversationsBridge: NSObject {
           activeClient.getTemporaryContentUrlsForMedia(Set([media])) { urlResult, sidToUrl in
             let url = sidToUrl?[request.mediaSid] ?? sidToUrl?[media.sid ?? ""]
             if let url {
-              completion(.success(url))
+              completion(.success(url.absoluteString))
               return
             }
             completion(
@@ -426,13 +426,9 @@ final class ConversationsBridge: NSObject {
           return
         }
 
-        let participants =
-          conversation.participants()?.compactMap { participant -> ParticipantDto? in
-            guard let participant else {
-              return nil
-            }
-            return self.eventMapper.mapParticipant(participant, conversationSid: sid)
-          } ?? []
+        let participants = conversation.participants().map {
+          self.eventMapper.mapParticipant($0, conversationSid: sid)
+        }
         completion(.success(participants))
       case .failure(let error):
         completion(.failure(error))
@@ -524,6 +520,10 @@ final class ConversationsBridge: NSObject {
     client?.delegate = nil
     client?.shutdown()
     client = nil
+  }
+
+  private static func clampedMessageCount(_ count: Int64) -> UInt {
+    UInt(max(1, min(Int(count), 100)))
   }
 
   private static func applyAttributesJson(
