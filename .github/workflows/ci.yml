@@ -7,6 +7,9 @@ on:
       - master
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   documentation-sync:
     runs-on: ubuntu-latest
@@ -123,6 +126,9 @@ jobs:
 
   ios-build:
     runs-on: macos-latest
+    permissions:
+      contents: read
+      actions: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
