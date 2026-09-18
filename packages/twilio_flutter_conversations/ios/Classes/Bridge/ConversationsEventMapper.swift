@@ -66,7 +66,7 @@ final class ConversationsEventMapper {
       sid: conversation.sid ?? "",
       uniqueName: conversation.uniqueName ?? "",
       friendlyName: conversation.friendlyName ?? "",
-      lastMessageIndex: conversation.lastMessageIndex?.intValue
+      lastMessageIndex: conversation.lastMessageIndex.map { Int64($0.intValue) }
     )
   }
 

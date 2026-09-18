@@ -19,7 +19,7 @@ enum MessageAttributesJson {
         userInfo: [NSLocalizedDescriptionKey: "attributesJson must decode to a JSON object."]
       )
     }
-    return JsonAttributes(dictionary: dictionary)
+    return TCHJsonAttributes(dictionary: dictionary)
   }
 
   static func json(from message: TCHMessage) -> String? {
