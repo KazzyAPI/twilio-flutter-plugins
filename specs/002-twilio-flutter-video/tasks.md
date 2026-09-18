@@ -12,7 +12,7 @@ Feature: `specs/002-twilio-flutter-video`
 - [x] CI: iOS Conversations host adapter + `@MainActor` Flutter event dispatch (Pigeon 29)
 - [x] CI: Example iOS UIScene + CocoaPods (disable SPM) for Twilio podspec plugins
 - [x] CI: iOS event mapper enums aligned with Conversations SDK 4.x (drop syncWindow)
-- [x] CI: iOS media temporary URLs via `getTemporaryContentUrlsForMedia`
+- [x] CI: iOS media temporary URLs via `getTemporaryContentUrlsFor(media:)`
 - [x] CI: iOS Conversations SDK 4.x delegates (`TCH*Update`, client delegate callbacks)
 - [x] CI: iOS typing delegate selectors and `Media` type rename
 - [x] CI: iOS async conversation lookup and `Set` for temporary media URLs

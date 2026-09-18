@@ -383,7 +383,7 @@ final class ConversationsBridge: NSObject {
             return
           }
 
-          activeClient.getTemporaryContentUrlsForMedia(Set([media])) { urlResult, sidToUrl in
+          activeClient.getTemporaryContentUrlsFor(media: Set([media])) { urlResult, sidToUrl in
             let url = sidToUrl?[request.mediaSid] ?? sidToUrl?[media.sid ?? ""]
             if let url {
               completion(.success(url.absoluteString))
