@@ -13,7 +13,7 @@ object MessageMediaMapping {
       sid = media.sid,
       contentType = media.contentType ?: "application/octet-stream",
       filename = media.filename ?: "",
-      sizeBytes = media.size.toInt(),
+      sizeBytes = media.size,
     )
   }
 

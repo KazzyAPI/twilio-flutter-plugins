@@ -6,13 +6,19 @@ import org.json.JSONObject
 
 /** Shared JSON ↔ Twilio [Attributes] conversion for Android. */
 object MessageAttributesJson {
-  /** Parses and validates a JSON object string (testable without a [Message]). */
-  fun parseJsonObject(jsonObject: String): JSONObject {
-    val parsed = JSONObject(jsonObject)
-    if (parsed.length() == 0) {
+  private val EMPTY_JSON_OBJECT = Regex("""^\{\s*\}$""")
+
+  /** Validates JSON object strings without [JSONObject] (safe for JVM unit tests). */
+  internal fun requireNonEmptyJsonObject(jsonObject: String) {
+    if (EMPTY_JSON_OBJECT.matches(jsonObject.trim())) {
       throw IllegalArgumentException("attributesJson must be a non-empty JSON object.")
     }
-    return parsed
+  }
+
+  /** Parses and validates a JSON object string (testable without a [Message]). */
+  fun parseJsonObject(jsonObject: String): JSONObject {
+    requireNonEmptyJsonObject(jsonObject)
+    return JSONObject(jsonObject)
   }
 
   /** Parses a JSON object string into Twilio [Attributes]. */
@@ -29,7 +35,7 @@ object MessageAttributesJson {
       } catch (_: IllegalStateException) {
         return null
       }
-    if (jsonObject.length() == 0) {
+    if (jsonObject?.length() == 0) {
       return null
     }
     return jsonObject.toString()

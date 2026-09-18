@@ -11,6 +11,7 @@ import com.twilioflutter.conversations.pigeon.ConversationDto
 import com.twilioflutter.conversations.pigeon.ConversationSynchronizationStatus
 import com.twilioflutter.conversations.pigeon.ConversationsEventType
 import com.twilioflutter.conversations.pigeon.ConversationsNativeEvent
+import com.twilioflutter.conversations.pigeon.MessageContentType
 import com.twilioflutter.conversations.pigeon.MessageDto
 import com.twilioflutter.conversations.pigeon.ParticipantDto
 import com.twilioflutter.conversations.pigeon.UserDto
@@ -21,15 +22,16 @@ class ConversationsEventMapper {
     status: ConversationsClient.SynchronizationStatus,
   ): ClientSynchronizationStatus {
     return when (status) {
-      ConversationsClient.SynchronizationStatus.NONE,
-      ConversationsClient.SynchronizationStatus.IDENTITIES,
-      -> ClientSynchronizationStatus.STARTED
-      ConversationsClient.SynchronizationStatus.CONVERSATIONS ->
-        ClientSynchronizationStatus.CONVERSATIONSLISTCOMPLETED
+      ConversationsClient.SynchronizationStatus.STARTED ->
+        ClientSynchronizationStatus.STARTED
+      ConversationsClient.SynchronizationStatus.CONVERSATIONS_COMPLETED ->
+        ClientSynchronizationStatus.CONVERSATIONS_LIST_COMPLETED
       ConversationsClient.SynchronizationStatus.COMPLETED ->
         ClientSynchronizationStatus.COMPLETED
       ConversationsClient.SynchronizationStatus.FAILED ->
         ClientSynchronizationStatus.FAILED
+      ConversationsClient.SynchronizationStatus.SYNCHRONIZATION_DISABLED ->
+        ClientSynchronizationStatus.UNKNOWN
       else -> ClientSynchronizationStatus.UNKNOWN
     }
   }
@@ -48,7 +50,7 @@ class ConversationsEventMapper {
         ClientConnectionState.DENIED
       ConversationsClient.ConnectionState.ERROR ->
         ClientConnectionState.ERROR
-      ConversationsClient.ConnectionState.FATAL ->
+      ConversationsClient.ConnectionState.FATAL_ERROR ->
         ClientConnectionState.FATAL
       else -> ClientConnectionState.UNKNOWN
     }
@@ -64,8 +66,6 @@ class ConversationsEventMapper {
         ConversationSynchronizationStatus.IDENTIFIER
       Conversation.SynchronizationStatus.METADATA ->
         ConversationSynchronizationStatus.METADATA
-      Conversation.SynchronizationStatus.SYNCWINDOW ->
-        ConversationSynchronizationStatus.SYNCWINDOW
       Conversation.SynchronizationStatus.ALL ->
         ConversationSynchronizationStatus.ALL
       Conversation.SynchronizationStatus.FAILED ->
@@ -92,6 +92,7 @@ class ConversationsEventMapper {
         body = message.body ?: "",
         messageIndex = message.messageIndex,
         dateCreatedEpochMs = message.dateCreatedAsDate?.time ?: 0L,
+        contentType = MessageContentType.TEXT,
         attributesJson = MessageAttributesJson.jsonFromMessage(message),
       )
     return MessageMediaMapping.enrichMessageDto(base, message)
@@ -116,7 +117,7 @@ class ConversationsEventMapper {
     status: ConversationsClient.SynchronizationStatus,
   ): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.CLIENTSYNCHRONIZATIONSTATUSUPDATED,
+      type = ConversationsEventType.CLIENT_SYNCHRONIZATION_STATUS_UPDATED,
       synchronizationStatus = mapSynchronizationStatus(status),
     )
   }
@@ -125,14 +126,14 @@ class ConversationsEventMapper {
     state: ConversationsClient.ConnectionState,
   ): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.CONNECTIONSTATECHANGED,
+      type = ConversationsEventType.CONNECTION_STATE_CHANGED,
       connectionState = mapConnectionState(state),
     )
   }
 
   fun conversationAddedEvent(conversation: Conversation): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.CONVERSATIONADDED,
+      type = ConversationsEventType.CONVERSATION_ADDED,
       conversation = mapConversation(conversation),
     )
   }
@@ -142,7 +143,7 @@ class ConversationsEventMapper {
     reason: Conversation.UpdateReason,
   ): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.CONVERSATIONUPDATED,
+      type = ConversationsEventType.CONVERSATION_UPDATED,
       conversation = mapConversation(conversation),
       updateReason = reason.name,
     )
@@ -150,7 +151,7 @@ class ConversationsEventMapper {
 
   fun conversationDeletedEvent(conversation: Conversation): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.CONVERSATIONDELETED,
+      type = ConversationsEventType.CONVERSATION_DELETED,
       conversation = mapConversation(conversation),
     )
   }
@@ -159,7 +160,7 @@ class ConversationsEventMapper {
     conversation: Conversation,
   ): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.CONVERSATIONSYNCHRONIZATIONUPDATED,
+      type = ConversationsEventType.CONVERSATION_SYNCHRONIZATION_UPDATED,
       conversation = mapConversation(conversation),
       conversationSyncStatus = mapConversationSynchronizationStatus(conversation),
     )
@@ -167,7 +168,7 @@ class ConversationsEventMapper {
 
   fun messageAddedEvent(message: Message, conversationSid: String): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.MESSAGEADDED,
+      type = ConversationsEventType.MESSAGE_ADDED,
       message = mapMessage(message, conversationSid),
     )
   }
@@ -178,7 +179,7 @@ class ConversationsEventMapper {
     reason: Message.UpdateReason,
   ): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.MESSAGEUPDATED,
+      type = ConversationsEventType.MESSAGE_UPDATED,
       message = mapMessage(message, conversationSid),
       updateReason = reason.name,
     )
@@ -189,7 +190,7 @@ class ConversationsEventMapper {
     conversationSid: String,
   ): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.MESSAGEDELETED,
+      type = ConversationsEventType.MESSAGE_DELETED,
       message = mapMessage(message, conversationSid),
     )
   }
@@ -199,7 +200,7 @@ class ConversationsEventMapper {
     conversationSid: String,
   ): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.PARTICIPANTADDED,
+      type = ConversationsEventType.PARTICIPANT_ADDED,
       participant = mapParticipant(participant, conversationSid),
     )
   }
@@ -210,7 +211,7 @@ class ConversationsEventMapper {
     reason: Participant.UpdateReason,
   ): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.PARTICIPANTUPDATED,
+      type = ConversationsEventType.PARTICIPANT_UPDATED,
       participant = mapParticipant(participant, conversationSid),
       updateReason = reason.name,
     )
@@ -221,7 +222,7 @@ class ConversationsEventMapper {
     conversationSid: String,
   ): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.PARTICIPANTDELETED,
+      type = ConversationsEventType.PARTICIPANT_DELETED,
       participant = mapParticipant(participant, conversationSid),
     )
   }
@@ -231,7 +232,7 @@ class ConversationsEventMapper {
     conversationSid: String,
   ): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.TYPINGSTARTED,
+      type = ConversationsEventType.TYPING_STARTED,
       participant = mapParticipant(participant, conversationSid),
     )
   }
@@ -241,14 +242,14 @@ class ConversationsEventMapper {
     conversationSid: String,
   ): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.TYPINGENDED,
+      type = ConversationsEventType.TYPING_ENDED,
       participant = mapParticipant(participant, conversationSid),
     )
   }
 
   fun userUpdatedEvent(user: User, reason: User.UpdateReason): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.USERUPDATED,
+      type = ConversationsEventType.USER_UPDATED,
       user = mapUser(user),
       updateReason = reason.name,
     )
@@ -256,33 +257,33 @@ class ConversationsEventMapper {
 
   fun userSubscribedEvent(user: User): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.USERSUBSCRIBED,
+      type = ConversationsEventType.USER_SUBSCRIBED,
       user = mapUser(user),
     )
   }
 
   fun userUnsubscribedEvent(user: User): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.USERUNSUBSCRIBED,
+      type = ConversationsEventType.USER_UNSUBSCRIBED,
       user = mapUser(user),
     )
   }
 
   fun tokenAboutToExpireEvent(): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.TOKENABOUTTOEXPIRE,
+      type = ConversationsEventType.TOKEN_ABOUT_TO_EXPIRE,
     )
   }
 
   fun tokenExpiredEvent(): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.TOKENEXPIRED,
+      type = ConversationsEventType.TOKEN_EXPIRED,
     )
   }
 
   fun notificationSubscribedEvent(): ConversationsNativeEvent {
     return ConversationsNativeEvent(
-      type = ConversationsEventType.NOTIFICATIONSUBSCRIBED,
+      type = ConversationsEventType.NOTIFICATION_SUBSCRIBED,
     )
   }
 

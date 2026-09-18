@@ -5,7 +5,7 @@ import com.twilio.conversations.CallbackListener
 import com.twilio.conversations.Conversation
 import com.twilio.conversations.ConversationsClient
 import com.twilio.conversations.ConversationsClientListener
-import com.twilio.conversations.ErrorInfo
+import com.twilio.util.ErrorInfo
 import com.twilio.conversations.Message
 import com.twilio.conversations.StatusListener
 import com.twilioflutter.conversations.pigeon.FlutterError
@@ -87,14 +87,6 @@ class ConversationsBridge(
         eventEmitter.emit(eventMapper.userUnsubscribedEvent(user))
       }
 
-      override fun onClientAboutToExpire() {
-        eventEmitter.emit(eventMapper.tokenAboutToExpireEvent())
-      }
-
-      override fun onClientExpired() {
-        eventEmitter.emit(eventMapper.tokenExpiredEvent())
-      }
-
       override fun onNotificationSubscribed() {
         eventEmitter.emit(eventMapper.notificationSubscribedEvent())
       }
@@ -119,6 +111,17 @@ class ConversationsBridge(
       override fun onTokenExpired() {
         eventEmitter.emit(eventMapper.tokenExpiredEvent())
       }
+
+      override fun onNewMessageNotification(
+        conversationSid: String,
+        messageSid: String,
+        messageIndex: Long,
+      ) {
+      }
+
+      override fun onAddedToConversationNotification(conversationSid: String) {}
+
+      override fun onRemovedFromConversationNotification(conversationSid: String) {}
     }
 
   fun connect(request: ConnectRequest, callback: (Result<Unit>) -> Unit) {
@@ -153,6 +156,7 @@ class ConversationsBridge(
     ConversationsClient.create(
       applicationContext,
       request.accessToken,
+      ConversationsClient.Properties.newBuilder().createProperties(),
       object : CallbackListener<ConversationsClient> {
         override fun onSuccess(conversationsClient: ConversationsClient) {
           if (connectSessionGuard.completeConnect(generation) == ConnectCompletion.STALE) {
@@ -283,7 +287,7 @@ class ConversationsBridge(
     request: GetMessagesRequest,
     callback: (Result<List<MessageDto>>) -> Unit,
   ) {
-    val count = request.count.coerceIn(1, 100)
+    val count = request.count.coerceIn(1, 100).toInt()
     resolveConversation(
       request.conversationSid,
       callback,
@@ -322,7 +326,7 @@ class ConversationsBridge(
     request: GetMessagesBeforeRequest,
     callback: (Result<List<MessageDto>>) -> Unit,
   ) {
-    val count = request.count.coerceIn(1, 100)
+    val count = request.count.coerceIn(1, 100).toInt()
     resolveConversation(
       request.conversationSid,
       callback,
@@ -405,9 +409,9 @@ class ConversationsBridge(
 
         var mediaUploadFailed = false
         messageBuilder.addMedia(
+          FileInputStream(file),
           request.mimeType,
           request.filename,
-          FileInputStream(file),
           object : MediaUploadListener {
             override fun onStarted() {}
 
@@ -492,7 +496,7 @@ class ConversationsBridge(
                 return
               }
 
-              media.getTemporaryUrl(
+              media.getTemporaryContentUrl(
                 object : CallbackListener<String> {
                   override fun onSuccess(url: String) {
                     callback(Result.success(url))

@@ -29,3 +29,7 @@ Use the repo [`.flutter-version`](../.flutter-version) (currently **3.47.4**) wi
 2. Bump Gradle dependency and pod constraint.
 3. Regenerate pigeon only if schema changed (`dart run pigeon …`).
 4. Run `flutter test`, Android `:twilio_flutter_conversations:testDebugUnitTest`, and example on one device per platform.
+
+## Native bridge notes (Pigeon 29)
+
+Generated Flutter APIs use **suspend**/`async` on Android and Swift. Native event emitters must call `onNativeEvent` from a coroutine (Android) or `Task` (iOS), not synchronously from Twilio SDK callback threads. Conversations Android **6.2.1** moved several types (for example `com.twilio.util.ErrorInfo`, updated sync/connection enums); keep bridges aligned with the pinned SDK Javadoc when CI Kotlin compile fails after a bump.
