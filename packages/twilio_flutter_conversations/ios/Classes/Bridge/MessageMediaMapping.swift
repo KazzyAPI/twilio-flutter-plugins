@@ -2,7 +2,7 @@ import Foundation
 import TwilioConversationsClient
 
 enum MessageMediaMapping {
-  static func mapMedia(_ media: TCHMedia) -> MediaAttachmentDto {
+  static func mapMedia(_ media: Media) -> MediaAttachmentDto {
     return MediaAttachmentDto(
       sid: media.sid ?? "",
       contentType: media.contentType ?? "application/octet-stream",

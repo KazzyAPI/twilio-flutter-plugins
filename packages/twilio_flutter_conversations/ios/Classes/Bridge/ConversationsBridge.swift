@@ -755,7 +755,7 @@ extension ConversationsBridge: TwilioConversationsClientDelegate {
 
   func conversationsClient(
     _ client: TwilioConversationsClient,
-    typingStartedOnConversation conversation: TCHConversation,
+    typingStartedOn conversation: TCHConversation,
     participant: TCHParticipant
   ) {
     eventEmitter.emit(
@@ -768,7 +768,7 @@ extension ConversationsBridge: TwilioConversationsClientDelegate {
 
   func conversationsClient(
     _ client: TwilioConversationsClient,
-    typingEndedOnConversation conversation: TCHConversation,
+    typingEndedOn conversation: TCHConversation,
     participant: TCHParticipant
   ) {
     eventEmitter.emit(

@@ -14,5 +14,6 @@ Feature: `specs/002-twilio-flutter-video`
 - [x] CI: iOS event mapper enums aligned with Conversations SDK 4.x (drop syncWindow)
 - [x] CI: iOS media temporary URLs via `getTemporaryContentUrlsForMedia`
 - [x] CI: iOS Conversations SDK 4.x delegates (`TCH*Update`, client delegate callbacks)
+- [x] CI: iOS typing delegate selectors and `Media` type rename
 - [ ] P2: Platform views for video rendering (future)
 - [ ] Example app + device E2E (future)
