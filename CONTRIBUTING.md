@@ -55,6 +55,12 @@ Integrator-facing install and usage docs live in [`docs/CONSUMER_GUIDE.md`](docs
 | Pigeon DTO → public models | `PigeonDtoMapper` |
 | Error code strings | `TwilioErrorCode.code` |
 
+## Releases
+
+Release Please on `main` opens per-package Release PRs (changelog + `pubspec.yaml` version) and creates GitHub tags when merged. Use [Conventional Commits](https://www.conventionalcommits.org/) on changes under `packages/<name>/`.
+
+Details: [`docs/RELEASES.md`](docs/RELEASES.md).
+
 ## Pull request checklist
 
 - [ ] Pigeon regenerated and committed

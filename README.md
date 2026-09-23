@@ -57,6 +57,7 @@ Native Twilio SDK versions: [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md).
 | [Event catalog](docs/EVENT_CATALOG.md) | Conversations events |
 | [Troubleshooting](docs/TROUBLESHOOTING.md) | Error codes and common failures |
 | [Contributing](CONTRIBUTING.md) | Maintainers: Pigeon, tests, CI |
+| [Releases](docs/RELEASES.md) | Release Please, changelogs, GitHub tags |
 
 ---
 
