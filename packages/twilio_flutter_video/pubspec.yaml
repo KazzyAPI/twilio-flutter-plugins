@@ -1,7 +1,6 @@
 name: twilio_flutter_video
 description: Typed Flutter wrapper for the Twilio Video SDK (scaffold).
 version: 0.0.1
-publish_to: none # git tags + path dep on internal core; remove when pub.dev bundling exists
 repository: https://github.com/KazzyAPI/twilio-flutter-plugins
 issue_tracker: https://github.com/KazzyAPI/twilio-flutter-plugins/issues
 
@@ -12,8 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  twilio_flutter_core:
-    path: ../twilio_flutter_core
+  meta: ^1.16.0
+  twilio_flutter_core: ^0.0.1
 
 dev_dependencies:
   flutter_test:

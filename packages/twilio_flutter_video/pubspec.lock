@@ -220,7 +220,7 @@ packages:
     source: hosted
     version: "0.13.0"
   meta:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: meta
       sha256: "307249ce4ff29d58a18e97f6345f539382eb9c9c29ecda628900f31de0443dd9"
@@ -315,9 +315,10 @@ packages:
   twilio_flutter_core:
     dependency: "direct main"
     description:
-      path: "../twilio_flutter_core"
-      relative: true
-    source: path
+      name: twilio_flutter_core
+      sha256: d80af7ecac10c35264755fecd68fba34b2135b5d03b0d89bfb631781f9ba08fd
+      url: "https://pub.dev"
+    source: hosted
     version: "0.0.1"
   typed_data:
     dependency: transitive

@@ -1,39 +1,39 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# twilio_flutter_core
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+Shared Dart types for the [Twilio Flutter plugins](https://github.com/KazzyAPI/twilio-flutter-plugins): normalized errors, message attribute JSON, and small codecs used by `twilio_flutter_conversations` and `twilio_flutter_video`.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+**Most apps should depend on a plugin directly**, not on this package. It is published so pub.dev can resolve plugin dependencies.
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+## What this package provides
 
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+- **`TwilioErrorCode`** — stable string codes from native bridges (`not_connected`, `sdk_failure`, …).
+- **`TwilioFlutterException`** — Dart-side failures with optional native details.
+- **`MessageAttributes`** — typed JSON object attributes for Conversations messages.
+- **`TwilioJsonObjectCodec`** — encode/decode JSON object maps for attributes.
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+You typically import a plugin instead:
 
-```dart
-const like = 'sample';
+```yaml
+dependencies:
+  twilio_flutter_conversations: ^0.0.1
 ```
 
-## Additional information
+If you handle errors explicitly:
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```dart
+import 'package:twilio_flutter_core/twilio_flutter_core.dart';
+
+try {
+  // …
+} on TwilioFlutterException catch (e) {
+  final code = e.code; // TwilioErrorCode
+}
+```
+
+## More information
+
+- Repository: [KazzyAPI/twilio-flutter-plugins](https://github.com/KazzyAPI/twilio-flutter-plugins)
+- Conversations plugin: [twilio_flutter_conversations](https://pub.dev/packages/twilio_flutter_conversations)
+- Video plugin: [twilio_flutter_video](https://pub.dev/packages/twilio_flutter_video)
