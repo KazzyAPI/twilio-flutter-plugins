@@ -1,0 +1,22 @@
+# pub.dev automated publishing (OIDC). Triggered only by Release Please tags.
+# Configure each package on pub.dev Admin → Automated publishing:
+#   Repository: KazzyAPI/twilio-flutter-plugins
+#   Tag patterns: twilio_flutter_core-v{{version}}, etc. (match release-please tags)
+# See https://dart.dev/tools/pub/automated-publishing
+
+name: Publish to pub.dev
+
+on:
+  push:
+    tags:
+      - 'twilio_flutter_core-v[0-9]+.[0-9]+.[0-9]+'
+      - 'twilio_flutter_conversations-v[0-9]+.[0-9]+.[0-9]+'
+      - 'twilio_flutter_video-v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  publish:
+    permissions:
+      id-token: write
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    with:
+      working-directory: ${{ contains(github.ref_name, 'twilio_flutter_conversations') && 'packages/twilio_flutter_conversations' || contains(github.ref_name, 'twilio_flutter_video') && 'packages/twilio_flutter_video' || 'packages/twilio_flutter_core' }}

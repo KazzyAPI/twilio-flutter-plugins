@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Publishes packages flagged by the Release Please publish job (core first, then plugins).
+# Emergency/local manual publish only. CI uses tag-triggered OIDC via publish-pub-dev.yml.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 

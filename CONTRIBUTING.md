@@ -57,7 +57,11 @@ Integrator-facing install and usage docs live in [`docs/CONSUMER_GUIDE.md`](docs
 
 ## Releases
 
-Release Please on `main` opens per-package Release PRs (changelog + `pubspec.yaml` version), creates GitHub tags when merged, and publishes to pub.dev when the `PUB_DEV_TOKEN` secret is set. Use [Conventional Commits](https://www.conventionalcommits.org/) on changes under `packages/<name>/`.
+**Land changes via pull requests into `main`** (feature/fix PRs). Do not bump release versions on ad-hoc direct pushes.
+
+Release Please then opens **Release PRs** into `main` (changelog + `pubspec.yaml`). Merging a Release PR creates a GitHub tag; [pub.dev automated publishing](https://dart.dev/tools/pub/automated-publishing) runs on that tag (OIDC, no long-lived token in Actions).
+
+Use [Conventional Commits](https://www.conventionalcommits.org/) on changes under `packages/<name>/`.
 
 Monorepo dev: run `./scripts/bootstrap.sh` (or `./scripts/link_pubspec_overrides.sh`) so path overrides for `twilio_flutter_core` are applied.
 

@@ -13,48 +13,8 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
-    outputs:
-      core_release_created: ${{ steps.release.outputs['packages/twilio_flutter_core--release_created'] }}
-      conversations_release_created: ${{ steps.release.outputs['packages/twilio_flutter_conversations--release_created'] }}
-      video_release_created: ${{ steps.release.outputs['packages/twilio_flutter_video--release_created'] }}
     steps:
       - name: Release Please
         uses: googleapis/release-please-action@v4
-        id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-
-  publish-to-pub-dev:
-    needs: release-please
-    if: >-
-      ${{
-        secrets.PUB_DEV_TOKEN != '' &&
-        (
-          needs.release-please.outputs.core_release_created == 'true' ||
-          needs.release-please.outputs.conversations_release_created == 'true' ||
-          needs.release-please.outputs.video_release_created == 'true'
-        )
-      }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    env:
-      PUB_TOKEN: ${{ secrets.PUB_DEV_TOKEN }}
-      PUBLISH_TWILIO_FLUTTER_CORE: ${{ needs.release-please.outputs.core_release_created }}
-      PUBLISH_TWILIO_FLUTTER_CONVERSATIONS: ${{ needs.release-please.outputs.conversations_release_created }}
-      PUBLISH_TWILIO_FLUTTER_VIDEO: ${{ needs.release-please.outputs.video_release_created }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version: '3.47.4'
-          cache: true
-
-      - name: Publish released packages to pub.dev
-        run: |
-          chmod +x scripts/publish_pub_dev_releases.sh
-          ./scripts/publish_pub_dev_releases.sh

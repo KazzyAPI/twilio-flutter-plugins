@@ -1,10 +1,12 @@
-# Releases (Release Please)
+# Releases (Release Please + pub.dev)
 
-This repo uses [Release Please](https://github.com/googleapis/release-please) to maintain per-package `CHANGELOG.md` files, bump `pubspec.yaml` versions, cut GitHub releases with tags, and (when configured) publish to [pub.dev](https://pub.dev).
+This repo ships through **pull requests to `main`**, then **Release Please release PRs**, then **GitHub tags** that trigger [pub.dev automated publishing](https://dart.dev/tools/pub/automated-publishing) (OIDC — no long-lived upload token in GitHub).
+
+References: [Publishing packages](https://dart.dev/tools/pub/publishing), [Automated publishing](https://dart.dev/tools/pub/automated-publishing).
 
 ## Packages
 
-| Path | Pub package | Tag example |
+| Path | Pub package | Release Please tag |
 | --- | --- | --- |
 | `packages/twilio_flutter_core` | `twilio_flutter_core` | `twilio_flutter_core-v0.0.2` |
 | `packages/twilio_flutter_conversations` | `twilio_flutter_conversations` | `twilio_flutter_conversations-v0.0.2` |
@@ -12,98 +14,111 @@ This repo uses [Release Please](https://github.com/googleapis/release-please) to
 
 Configuration: [`release-please-config.json`](../release-please-config.json) and [`.release-please-manifest.json`](../.release-please-manifest.json).
 
-## Day-to-day flow
+## End-to-end flow (PRs → main → pub.dev)
 
-1. Merge work to `main` using [Conventional Commits](https://www.conventionalcommits.org/) (see below).
-2. The [Release Please workflow](../.github/workflows/release-please.yml) runs on each push to `main`.
-3. When there are releasable changes for a package, Release Please opens (or updates) a **Release PR** for that package (`separate-pull-requests: true`).
-4. Review the PR: generated changelog entries and version bump in `pubspec.yaml`.
-5. **Merge the Release PR** → Release Please creates the GitHub release and tag; manifest versions update on `main`.
-6. If `PUB_DEV_TOKEN` is configured (see below), the same workflow publishes any package that was released on that push (**core first**, then conversations and video).
+```text
+Feature/fix PR  ──merge──►  main
+                              │
+                              ▼
+              Release Please opens/updates a Release PR (per package)
+                              │
+                              ▼
+              Review changelog + version bump  ──merge Release PR──►  main
+                              │
+                              ▼
+              Release Please creates GitHub Release + git tag on main
+                              │
+                              ▼
+              Tag push runs publish-pub-dev.yml  ──OIDC──►  pub.dev
+```
 
-## pub.dev setup (one-time)
+1. **Day-to-day work:** open a PR into `main` (required for production changes). Use [Conventional Commits](https://www.conventionalcommits.org/) on commits that touch `packages/<name>/`.
+2. **After merges to `main`:** [Release Please](../.github/workflows/release-please.yml) opens or updates **Release PR(s)** (`separate-pull-requests: true`).
+3. **Ship a version:** review and **merge the Release PR into `main`** (another PR — do not bump versions by hand on a direct push).
+4. **GitHub release + tag:** Release Please creates the release and tag (for example `twilio_flutter_core-v0.0.2`).
+5. **pub.dev:** [`.github/workflows/publish-pub-dev.yml`](../.github/workflows/publish-pub-dev.yml) runs on that tag push and publishes via the official `dart-lang/setup-dart` reusable workflow and OIDC.
 
-### 1. Create a publisher and claim package names
+pub.dev **rejects** publishes from Actions that were not triggered by a **tag push** — that is why publishing is separate from the Release Please job.
 
-1. Sign in at [pub.dev](https://pub.dev) with the Google account that will own releases.
-2. Create a **publisher** (org or individual) if you do not have one.
-3. Ensure you are allowed to publish `twilio_flutter_core`, `twilio_flutter_conversations`, and `twilio_flutter_video` (first successful publish claims the name).
+## pub.dev setup (one-time per package)
 
-**Order matters:** publish **`twilio_flutter_core`** before the Flutter plugins. Plugin `pubspec.yaml` files depend on `twilio_flutter_core` on pub.dev; the publish job runs core first when multiple packages release on the same push.
+### 1. Verified publisher (recommended)
 
-### 2. Create a CI upload token
+Follow [Create a verified publisher](https://dart.dev/tools/pub/publishing#create-a-verified-publisher) on pub.dev (domain verification via Search Console).
 
-1. Open [pub.dev account → Tokens](https://pub.dev/account/tokens) (or run `dart pub token add https://pub.dev` locally and copy a dedicated CI token).
-2. Create a token scoped for automated upload (follow pub.dev’s current guidance for long-lived CI tokens).
-3. In GitHub: **Settings → Secrets and variables → Actions → New repository secret**
-   - Name: **`PUB_DEV_TOKEN`**
-   - Value: the pub.dev token
+### 2. First version (manual)
 
-The publish job sets `PUB_TOKEN` from this secret (what `dart pub` / `flutter pub` expect in CI).
-
-If `PUB_DEV_TOKEN` is missing, Release Please and GitHub releases still run; pub.dev publish is skipped.
-
-### 3. Verify locally (optional)
-
-From a package directory, with a token exported:
+Automated publishing only works for **existing** packages. Publish **once** by hand:
 
 ```bash
-export PUB_TOKEN="…"
+export PUB_TOKEN="…"   # from https://pub.dev/account/tokens
 cd packages/twilio_flutter_core
 dart pub publish --dry-run
+dart pub publish
 ```
 
-For plugins:
+Repeat for each plugin after `twilio_flutter_core` is on pub.dev. New packages under a verified publisher may need a [documented workaround](https://dart.dev/tools/pub/publishing#publish-to-pubdev) (publish to a Google account first, then transfer to the publisher).
 
-```bash
-cd packages/twilio_flutter_conversations
-flutter pub publish --dry-run
-```
+**Order:** `twilio_flutter_core` before conversations/video (hosted dependency).
 
-## Monorepo dependencies vs pub.dev
+### 3. Enable GitHub Actions publishing (per package)
 
-Published `pubspec.yaml` files use **hosted** constraints (for example `twilio_flutter_core: ^0.0.1`). Local development uses **`pubspec_overrides.yaml`** (gitignored) to point at `../twilio_flutter_core`:
+For each package, open **Admin** → **Automated publishing** → **Enable publishing from GitHub Actions**:
 
-- Run `./scripts/bootstrap.sh` or `./scripts/link_pubspec_overrides.sh` after clone.
-- CI runs `link_pubspec_overrides.sh` before `pub get`.
+| Package | Repository | Tag pattern on pub.dev |
+| --- | --- | --- |
+| `twilio_flutter_core` | `KazzyAPI/twilio-flutter-plugins` | `twilio_flutter_core-v{{version}}` |
+| `twilio_flutter_conversations` | same | `twilio_flutter_conversations-v{{version}}` |
+| `twilio_flutter_video` | same | `twilio_flutter_video-v{{version}}` |
+
+Tag patterns must match Release Please (`include-component-in-tag` + `include-v-in-tag` in config) and the regexes in `publish-pub-dev.yml`.
+
+Optional hardening on pub.dev / GitHub: require a [GitHub Actions environment](https://dart.dev/tools/pub/automated-publishing#hardening-security-with-github-deployment-environments) (for example `pub.dev`) and tag protection rules.
+
+No `PUB_DEV_TOKEN` secret is required for CI when OIDC is configured.
+
+### 4. Prepare packages (pub.dev requirements)
+
+- `LICENSE`, `README.md`, `CHANGELOG.md` in each package directory
+- Hosted dependencies only in published `pubspec.yaml` (no `path:` deps)
+- Run `dart pub publish --dry-run` locally before the first automated tag
+
+## Monorepo local development
+
+Published `pubspec.yaml` files use hosted constraints (`twilio_flutter_core: ^0.0.1`). Local development uses gitignored **`pubspec_overrides.yaml`**:
+
+- `./scripts/bootstrap.sh` or `./scripts/link_pubspec_overrides.sh`
+- CI runs `link_pubspec_overrides.sh` before `pub get`
 
 Templates: `packages/*/pubspec_overrides.yaml.example`.
 
-When core has a breaking bump, update the minimum constraint in plugin `pubspec.yaml` in the same change set as the API that requires it.
-
-## Commit messages
-
-Release Please parses conventional commits scoped to files under each package path:
+## Commit messages (Release Please)
 
 | Prefix | Version bump (0.x) |
 | --- | --- |
 | `fix:` | patch |
 | `feat:` | minor |
-| `feat!:` or `BREAKING CHANGE:` | minor until 1.0 (`bump-minor-pre-major`) |
+| `feat!:` or `BREAKING CHANGE:` | minor until 1.0 |
 
 Examples:
 
 ```text
 feat(conversations): add getParticipants host API
 fix(video): map disconnect errors to TwilioErrorCode
-fix!: drop legacy connect overload
 ```
 
-Use scopes that match the package when helpful; commits that only touch `packages/twilio_flutter_conversations/` affect that package’s release PR.
+## Bootstrap / history
 
-## First-time / bootstrap notes
+- Versions in [`.release-please-manifest.json`](../.release-please-manifest.json) must match each `pubspec.yaml`.
+- One-time `"bootstrap-sha"` in `release-please-config.json` limits the first Release PR changelog window; remove after the first release PR merges.
 
-- **Current versions** live in `.release-please-manifest.json` and must match each package’s `pubspec.yaml` `version:` before the first automated release.
-- If the first Release PR includes too much history, add a one-time `"bootstrap-sha"` (full commit SHA) at the top of `release-please-config.json` — see [Release Please manifest docs](https://github.com/googleapis/release-please/blob/main/docs/manifest-releaser.md#bootstrapping). Remove it after the first release PR merges.
+## Emergency manual publish
 
-## Manual run (optional)
-
-Maintainers can run locally with the CLI (`npm i -g release-please`) against this repo; CI on `main` is the source of truth for opening Release PRs.
-
-Manual publish (emergency):
+Local upload still uses a pub.dev token:
 
 ```bash
 export PUB_TOKEN="…"
-./scripts/publish_pub_dev_releases.sh
-# with PUBLISH_TWILIO_FLUTTER_* env vars set to true for the packages you need
+cd packages/twilio_flutter_core && dart pub publish --dry-run && dart pub publish
 ```
+
+Do not tag manually unless you intend to trigger automated publishing for that version.
