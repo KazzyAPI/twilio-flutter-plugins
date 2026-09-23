@@ -1,0 +1,3 @@
+dependency_overrides:
+  twilio_flutter_core:
+    path: ../../twilio_flutter_core

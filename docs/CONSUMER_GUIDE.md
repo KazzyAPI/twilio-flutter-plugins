@@ -1,12 +1,12 @@
-# Consume the Twilio Flutter plugins
+# Consume the Twilio Flutter plugins (pub.dev)
 
-App developers add **`twilio_flutter_conversations`** and/or **`twilio_flutter_video`**. Shared **`twilio_flutter_core`** lives only inside the Git monorepo and is resolved automatically when you use a **git `path:` dependency** on a plugin.
+Add **`twilio_flutter_conversations`** and/or **`twilio_flutter_video`** from pub.dev. **`twilio_flutter_core`** is pulled in as a transitive dependency.
 
-| Package | Install name | Use when |
+| Package | pub.dev name | Use when |
 | --- | --- | --- |
 | Conversations | `twilio_flutter_conversations` | Chat threads, messages, typing, media in Conversations |
 | Video | `twilio_flutter_video` | Join a Programmable Video room (audio/video signaling and events) |
-| Core | *(not published)* | Do not depend on it directly; pulled in via the plugin’s path dep |
+| Core | `twilio_flutter_core` | Usually not declared directly |
 
 **Supported platforms:** iOS and Android only (no web or desktop).
 
@@ -29,28 +29,18 @@ Token docs:
 
 ## 1. Add dependencies
 
-Use a **git dependency** so pub can resolve the plugin’s internal `path: ../twilio_flutter_core`:
-
 ```yaml
 dependencies:
   flutter:
     sdk: flutter
 
-  twilio_flutter_conversations:
-    git:
-      url: https://github.com/KazzyAPI/twilio-flutter-plugins.git
-      path: packages/twilio_flutter_conversations
-      ref: main   # or a release tag, e.g. twilio_flutter_conversations-v0.0.1
+  twilio_flutter_conversations: ^0.0.1
 
   # Optional:
-  # twilio_flutter_video:
-  #   git:
-  #     url: https://github.com/KazzyAPI/twilio-flutter-plugins.git
-  #     path: packages/twilio_flutter_video
-  #     ref: main
+  # twilio_flutter_video: ^0.0.1
 ```
 
-When pub.dev publishing is enabled in the future, you may switch to `twilio_flutter_conversations: ^0.1.0` if that version is hosted there.
+Use the latest versions shown on [pub.dev](https://pub.dev).
 
 Use the latest versions shown on [pub.dev](https://pub.dev) for each package. Until first publish, use a Git dependency:
 

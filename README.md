@@ -14,9 +14,9 @@ Flutter plugins that wrap Twilio’s **official** iOS and Android SDKs for real-
 | --- | --- |
 | [`twilio_flutter_conversations`](packages/twilio_flutter_conversations) | Chat: connect with a JWT, sync conversations, send and receive messages (text and media), typing indicators, participant updates, token refresh events. |
 | [`twilio_flutter_video`](packages/twilio_flutter_video) | Video rooms: connect with a JWT and room name, room/participant events, mute local audio/video. Rendering video on screen (platform views) is not in this release yet. |
-| `twilio_flutter_core` | Shared error types and JSON helpers **inside this repo only** (`publish_to: none`). Not on pub.dev. |
+| [`twilio_flutter_core`](packages/twilio_flutter_core) | Shared error types and JSON helpers; dependency of the plugins on pub.dev. |
 
-Plugins are versioned with Release Please; consume them from **git** (see below) until pub.dev publishing supports bundled internal deps.
+Each package is published separately on [pub.dev](https://pub.dev).
 
 ---
 
@@ -28,15 +28,9 @@ Install, Android/iOS setup, backend tokens, and copy-paste examples:
 
 ```yaml
 dependencies:
-  twilio_flutter_conversations:
-    git:
-      url: https://github.com/KazzyAPI/twilio-flutter-plugins.git
-      path: packages/twilio_flutter_conversations
-      ref: twilio_flutter_conversations-v0.0.1   # or a commit SHA on main
-  # twilio_flutter_video: … same repo, path: packages/twilio_flutter_video
+  twilio_flutter_conversations: ^0.0.1
+  twilio_flutter_video: ^0.0.1   # optional
 ```
-
-Git resolves `twilio_flutter_core` via the plugin’s `path:` dependency inside the cloned repo.
 
 ---
 
@@ -61,7 +55,7 @@ Native Twilio SDK versions: [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md).
 | [Event catalog](docs/EVENT_CATALOG.md) | Conversations events |
 | [Troubleshooting](docs/TROUBLESHOOTING.md) | Error codes and common failures |
 | [Contributing](CONTRIBUTING.md) | Maintainers: Pigeon, tests, CI |
-| [Releases](docs/RELEASES.md) | Release Please, changelogs, GitHub tags |
+| [Releases](docs/RELEASES.md) | Release Please, pub.dev, first publish |
 
 ---
 

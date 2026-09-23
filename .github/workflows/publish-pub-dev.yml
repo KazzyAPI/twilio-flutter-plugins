@@ -1,18 +1,14 @@
-# pub.dev OIDC publish for *plugins only* (Release Please tags).
-# twilio_flutter_core is monorepo-internal (publish_to: none) and uses path: deps.
-#
-# pub.dev rejects packages with path dependencies, so automated publish here will
-# fail until we add a release-time vendoring step OR publish core separately.
-# Prefer git dependencies for consumers until then — see docs/RELEASES.md.
-#
-# When ready: enable Automated publishing on pub.dev Admin for each plugin and
-# tag patterns twilio_flutter_conversations-v{{version}}, twilio_flutter_video-v{{version}}.
+# pub.dev OIDC publish on Release Please tags. Configure each package on pub.dev Admin:
+#   Repository: KazzyAPI/twilio-flutter-plugins
+#   Tag patterns: twilio_flutter_core-v{{version}}, etc.
+# See https://dart.dev/tools/pub/automated-publishing and docs/RELEASES.md
 
 name: Publish to pub.dev
 
 on:
   push:
     tags:
+      - 'twilio_flutter_core-v[0-9]+.[0-9]+.[0-9]+'
       - 'twilio_flutter_conversations-v[0-9]+.[0-9]+.[0-9]+'
       - 'twilio_flutter_video-v[0-9]+.[0-9]+.[0-9]+'
 
@@ -22,4 +18,4 @@ jobs:
       id-token: write
     uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
     with:
-      working-directory: ${{ contains(github.ref_name, 'twilio_flutter_video') && 'packages/twilio_flutter_video' || 'packages/twilio_flutter_conversations' }}
+      working-directory: ${{ contains(github.ref_name, 'twilio_flutter_conversations') && 'packages/twilio_flutter_conversations' || contains(github.ref_name, 'twilio_flutter_video') && 'packages/twilio_flutter_video' || 'packages/twilio_flutter_core' }}
