@@ -42,24 +42,38 @@ pub.dev **rejects** publishes from Actions that were not triggered by a **tag pu
 
 ## pub.dev setup (one-time per package)
 
-### 1. Verified publisher (recommended)
+### What pub.dev does *not* have
 
-Follow [Create a verified publisher](https://dart.dev/tools/pub/publishing#create-a-verified-publisher) on pub.dev (domain verification via Search Console).
+- **No “create package” screen.** A package is created the first time a version is **uploaded** successfully (`dart pub publish` or tag-triggered CI).
+- **No required “tokens” web page** for our GitHub flow. Older docs linked `pub.dev/account/tokens`; that URL is often missing. Use **`dart pub login`** (browser) for a one-time manual upload, or **`dart pub token add https://pub.dev`** only if you need a CLI-stored token ([`dart pub token`](https://dart.dev/tools/pub/cmd/pub-token)).
+- **Automated publishing (OIDC)** is configured **per package** under that package’s **Admin** tab — only **after** the package exists on pub.dev.
 
-### 2. First version (manual)
+### 1. Sign in on pub.dev
 
-Automated publishing only works for **existing** packages. Publish **once** by hand:
+Use the **Google account** that should own uploads (personal or org). Confirm you’re signed in (avatar menu on [pub.dev](https://pub.dev)). If menu items are missing, you’re usually logged out or on the wrong account.
+
+### 2. Verified publisher (optional but recommended)
+
+Avatar menu → **Create publisher** → verify a domain you control ([Search Console](https://search.google.com/search-console)).  
+**Note:** You cannot publish a **brand-new** package *directly* onto a verified publisher in one step. Typical path: publish the first version with your **Google account**, then **Admin → Transfer to publisher** ([pub.dev docs](https://dart.dev/tools/pub/publishing#publish-to-pubdev)).
+
+### 3. First version (manual, from this repo)
+
+Automated tag publishing only works after the package **already exists** on pub.dev.
 
 ```bash
-export PUB_TOKEN="…"   # from https://pub.dev/account/tokens
+./scripts/link_pubspec_overrides.sh   # local dev only; not used for publish contents
+dart pub login                        # opens browser; authorizes pub to upload
 cd packages/twilio_flutter_core
-dart pub publish --dry-run
-dart pub publish
+dart pub publish --dry-run            # fix any errors first
+dart pub publish                      # confirm when prompted — creates the package name
 ```
 
-Repeat for each plugin after `twilio_flutter_core` is on pub.dev. New packages under a verified publisher may need a [documented workaround](https://dart.dev/tools/pub/publishing#publish-to-pubdev) (publish to a Google account first, then transfer to the publisher).
+Repeat for each plugin **after** `twilio_flutter_core` is on pub.dev (`twilio_flutter_conversations`, then `twilio_flutter_video`). Use `flutter pub publish` in plugin dirs if you prefer; `dart pub publish` also works for Flutter packages when the Flutter SDK is on your `PATH`.
 
-**Order:** `twilio_flutter_core` before conversations/video (hosted dependency).
+If `dart pub login` prints an error after “Successfully authorized”, credentials may still be saved ([known pub issue](https://github.com/dart-lang/pub/issues/3424)). Try `dart pub publish --dry-run` anyway, or `dart pub logout` and log in again with the correct Google account.
+
+**Order:** `twilio_flutter_core` before conversations/video (hosted dependency in `pubspec.yaml`).
 
 ### 3. Enable GitHub Actions publishing (per package)
 
@@ -75,7 +89,7 @@ Tag patterns must match Release Please (`include-component-in-tag` + `include-v-
 
 Optional hardening on pub.dev / GitHub: require a [GitHub Actions environment](https://dart.dev/tools/pub/automated-publishing#hardening-security-with-github-deployment-environments) (for example `pub.dev`) and tag protection rules.
 
-No `PUB_DEV_TOKEN` secret is required for CI when OIDC is configured.
+No GitHub **secret token** is required for CI when OIDC is configured (do not rely on a pub.dev “tokens” page for Actions).
 
 ### 4. Prepare packages (pub.dev requirements)
 
@@ -114,11 +128,19 @@ fix(video): map disconnect errors to TwilioErrorCode
 
 ## Emergency manual publish
 
-Local upload still uses a pub.dev token:
-
 ```bash
-export PUB_TOKEN="…"
+dart pub login   # if not already authorized
 cd packages/twilio_flutter_core && dart pub publish --dry-run && dart pub publish
 ```
 
-Do not tag manually unless you intend to trigger automated publishing for that version.
+Do not push a Release Please tag manually unless you intend to trigger automated publishing for that version.
+
+## Stuck?
+
+| Symptom | What to do |
+| --- | --- |
+| No tokens page on pub.dev | Normal for many accounts. Use `dart pub login` or `dart pub token add https://pub.dev` ([docs](https://dart.dev/tools/pub/cmd/pub-token)). |
+| Can’t “create” a package in the UI | Publish from the CLI; the name is taken from `pubspec.yaml` `name:`. |
+| 403 / not an uploader | Wrong Google account — `dart pub logout`, login with the account that owns the package. |
+| Publisher / transfer confusion | First publish as uploader → package **Admin** → transfer to publisher. |
+| Still blocked | Email [support@pub.dev](mailto:support@pub.dev) with package name and Google account email. |
