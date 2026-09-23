@@ -14,9 +14,9 @@ Flutter plugins that wrap Twilio’s **official** iOS and Android SDKs for real-
 | --- | --- |
 | [`twilio_flutter_conversations`](packages/twilio_flutter_conversations) | Chat: connect with a JWT, sync conversations, send and receive messages (text and media), typing indicators, participant updates, token refresh events. |
 | [`twilio_flutter_video`](packages/twilio_flutter_video) | Video rooms: connect with a JWT and room name, room/participant events, mute local audio/video. Rendering video on screen (platform views) is not in this release yet. |
-| `twilio_flutter_core` | Shared error types and JSON helpers; pulled in by the plugins. You normally do not depend on it directly. |
+| `twilio_flutter_core` | Shared error types and JSON helpers **inside this repo only** (`publish_to: none`). Not on pub.dev. |
 
-Each package is published separately on pub.dev (this Git repo is not a single pub artifact).
+Plugins are versioned with Release Please; consume them from **git** (see below) until pub.dev publishing supports bundled internal deps.
 
 ---
 
@@ -28,11 +28,15 @@ Install, Android/iOS setup, backend tokens, and copy-paste examples:
 
 ```yaml
 dependencies:
-  twilio_flutter_conversations: ^0.1.0
-  twilio_flutter_video: ^0.1.0   # optional
+  twilio_flutter_conversations:
+    git:
+      url: https://github.com/KazzyAPI/twilio-flutter-plugins.git
+      path: packages/twilio_flutter_conversations
+      ref: twilio_flutter_conversations-v0.0.1   # or a commit SHA on main
+  # twilio_flutter_video: … same repo, path: packages/twilio_flutter_video
 ```
 
-Use the versions on [pub.dev](https://pub.dev) when available.
+Git resolves `twilio_flutter_core` via the plugin’s `path:` dependency inside the cloned repo.
 
 ---
 

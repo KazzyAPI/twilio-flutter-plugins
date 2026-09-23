@@ -63,7 +63,7 @@ Release Please then opens **Release PRs** into `main` (changelog + `pubspec.yaml
 
 Use [Conventional Commits](https://www.conventionalcommits.org/) on changes under `packages/<name>/`.
 
-Monorepo dev: run `./scripts/bootstrap.sh` (or `./scripts/link_pubspec_overrides.sh`) so path overrides for `twilio_flutter_core` are applied.
+`twilio_flutter_core` is **not published**; plugins depend on it via `path: ../twilio_flutter_core`.
 
 Details: [`docs/RELEASES.md`](docs/RELEASES.md).
 

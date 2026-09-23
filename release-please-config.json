@@ -21,10 +21,6 @@
     { "type": "ci", "section": "Continuous Integration", "hidden": true }
   ],
   "packages": {
-    "packages/twilio_flutter_core": {
-      "component": "twilio_flutter_core",
-      "package-name": "twilio_flutter_core"
-    },
     "packages/twilio_flutter_conversations": {
       "component": "twilio_flutter_conversations",
       "package-name": "twilio_flutter_conversations"

@@ -2,9 +2,6 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-chmod +x "$ROOT/scripts/link_pubspec_overrides.sh"
-"$ROOT/scripts/link_pubspec_overrides.sh"
-
 cd "$ROOT/packages/twilio_flutter_core" && dart pub get && dart test
 cd "$ROOT/packages/twilio_flutter_conversations" && flutter pub get && dart run pigeon --input pigeons/conversations_api.dart
 flutter test
