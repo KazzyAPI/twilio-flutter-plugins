@@ -57,7 +57,9 @@ Integrator-facing install and usage docs live in [`docs/CONSUMER_GUIDE.md`](docs
 
 ## Releases
 
-Release Please on `main` opens per-package Release PRs (changelog + `pubspec.yaml` version) and creates GitHub tags when merged. Use [Conventional Commits](https://www.conventionalcommits.org/) on changes under `packages/<name>/`.
+Release Please on `main` opens per-package Release PRs (changelog + `pubspec.yaml` version), creates GitHub tags when merged, and publishes to pub.dev when the `PUB_DEV_TOKEN` secret is set. Use [Conventional Commits](https://www.conventionalcommits.org/) on changes under `packages/<name>/`.
+
+Monorepo dev: run `./scripts/bootstrap.sh` (or `./scripts/link_pubspec_overrides.sh`) so path overrides for `twilio_flutter_core` are applied.
 
 Details: [`docs/RELEASES.md`](docs/RELEASES.md).
 

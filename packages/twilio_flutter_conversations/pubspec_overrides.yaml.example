@@ -1,0 +1,5 @@
+# Copy to pubspec_overrides.yaml (gitignored) for monorepo development.
+# CI and ./scripts/bootstrap.sh create pubspec_overrides.yaml from this file.
+dependency_overrides:
+  twilio_flutter_core:
+    path: ../twilio_flutter_core

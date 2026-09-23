@@ -1,7 +1,8 @@
 name: twilio_flutter_conversations
 description: Typed Flutter wrapper for the Twilio Conversations SDK on iOS and Android.
 version: 0.0.1
-publish_to: none
+repository: https://github.com/KazzyAPI/twilio-flutter-plugins
+issue_tracker: https://github.com/KazzyAPI/twilio-flutter-plugins/issues
 
 environment:
   sdk: '>=3.13.0 <4.0.0'
@@ -10,8 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  twilio_flutter_core:
-    path: ../twilio_flutter_core
+  twilio_flutter_core: ^0.0.1
 
 dev_dependencies:
   flutter_test:

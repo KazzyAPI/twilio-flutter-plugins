@@ -1,7 +1,8 @@
 name: twilio_flutter_core
 description: Shared types and errors for Twilio Flutter plugins.
 version: 0.0.1
-publish_to: none
+repository: https://github.com/KazzyAPI/twilio-flutter-plugins
+issue_tracker: https://github.com/KazzyAPI/twilio-flutter-plugins/issues
 
 environment:
   sdk: '>=3.13.0 <4.0.0'

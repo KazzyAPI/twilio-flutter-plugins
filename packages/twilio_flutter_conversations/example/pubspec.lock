@@ -247,7 +247,7 @@ packages:
     source: path
     version: "0.0.1"
   twilio_flutter_core:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       path: "../../twilio_flutter_core"
       relative: true
