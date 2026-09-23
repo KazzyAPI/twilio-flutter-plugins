@@ -315,11 +315,10 @@ packages:
   twilio_flutter_core:
     dependency: "direct main"
     description:
-      name: twilio_flutter_core
-      sha256: d80af7ecac10c35264755fecd68fba34b2135b5d03b0d89bfb631781f9ba08fd
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.1"
+      path: "../twilio_flutter_core"
+      relative: true
+    source: path
+    version: "0.0.2"
   typed_data:
     dependency: transitive
     description:

@@ -17,7 +17,7 @@ You typically import a plugin instead:
 
 ```yaml
 dependencies:
-  twilio_flutter_conversations: ^0.0.1
+  twilio_flutter_conversations: ^0.0.2
 ```
 
 If you handle errors explicitly:

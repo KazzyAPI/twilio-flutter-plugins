@@ -245,14 +245,14 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   twilio_flutter_core:
     dependency: "direct overridden"
     description:
       path: "../../twilio_flutter_core"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   vector_math:
     dependency: transitive
     description:

@@ -8,10 +8,10 @@ Twilio Conversations (classic) for Flutter on iOS and Android.
 
 ```yaml
 dependencies:
-  twilio_flutter_conversations: ^0.1.0
+  twilio_flutter_conversations: ^0.0.2
 ```
 
-Replace `^0.1.0` with the version on [pub.dev](https://pub.dev/packages/twilio_flutter_conversations) when published.
+Latest version: [pub.dev/packages/twilio_flutter_conversations](https://pub.dev/packages/twilio_flutter_conversations).
 
 ## Minimal connect
 

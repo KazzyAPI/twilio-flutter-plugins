@@ -28,8 +28,8 @@ Install, Android/iOS setup, backend tokens, and copy-paste examples:
 
 ```yaml
 dependencies:
-  twilio_flutter_conversations: ^0.0.1
-  twilio_flutter_video: ^0.0.1   # optional
+  twilio_flutter_conversations: ^0.0.2
+  twilio_flutter_video: ^0.0.2   # optional
 ```
 
 ---

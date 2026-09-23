@@ -34,15 +34,15 @@ dependencies:
   flutter:
     sdk: flutter
 
-  twilio_flutter_conversations: ^0.0.1
+  twilio_flutter_conversations: ^0.0.2
 
   # Optional:
-  # twilio_flutter_video: ^0.0.1
+  # twilio_flutter_video: ^0.0.2
 ```
 
-Use the latest versions shown on [pub.dev](https://pub.dev).
+Use the latest versions on [pub.dev](https://pub.dev) for [conversations](https://pub.dev/packages/twilio_flutter_conversations), [video](https://pub.dev/packages/twilio_flutter_video), and [core](https://pub.dev/packages/twilio_flutter_core) (core is usually transitive).
 
-Use the latest versions shown on [pub.dev](https://pub.dev) for each package. Until first publish, use a Git dependency:
+**Optional — Git dependency** (unreleased commits on `main`):
 
 ```yaml
 dependencies:
@@ -50,10 +50,12 @@ dependencies:
     git:
       url: https://github.com/KazzyAPI/twilio-flutter-plugins.git
       path: packages/twilio_flutter_conversations
+      ref: main
   twilio_flutter_video:
     git:
       url: https://github.com/KazzyAPI/twilio-flutter-plugins.git
       path: packages/twilio_flutter_video
+      ref: main
 ```
 
 Then:
@@ -412,8 +414,8 @@ Dependencies:
 
 ```yaml
 dependencies:
-  twilio_flutter_conversations: ^0.1.0
-  twilio_flutter_video: ^0.1.0
+  twilio_flutter_conversations: ^0.0.2
+  twilio_flutter_video: ^0.0.2
 ```
 
 Use **separate** session objects and **separate** tokens (Conversations JWT vs Video JWT). Your backend may expose one endpoint that returns both:

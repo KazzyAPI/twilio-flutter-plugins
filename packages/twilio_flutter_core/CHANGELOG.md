@@ -1,6 +1,8 @@
 ## Unreleased
 
-* `MessageAttributes` type; `TwilioErrorCode.parse`; `TwilioFlutterException.nativeError` factory.
+## 0.0.2
+
+* Publish on pub.dev; README and repository metadata for package consumers.
 
 ## 0.0.1
 

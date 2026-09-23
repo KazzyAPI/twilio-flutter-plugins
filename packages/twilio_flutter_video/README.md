@@ -10,10 +10,10 @@ Platform views for rendering video tracks are **not** included yet. The snippets
 
 ```yaml
 dependencies:
-  twilio_flutter_video: ^0.1.0
+  twilio_flutter_video: ^0.0.2
 ```
 
-Replace `^0.1.0` with the version on [pub.dev](https://pub.dev/packages/twilio_flutter_video) when published.
+Latest version: [pub.dev/packages/twilio_flutter_video](https://pub.dev/packages/twilio_flutter_video).
 
 ## Permissions (before `session.start`)
 

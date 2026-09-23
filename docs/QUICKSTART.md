@@ -14,10 +14,10 @@ Ensure the user is a **participant** in at least one conversation ([REST API](ht
 
 ```yaml
 dependencies:
-  twilio_flutter_conversations: ^0.1.0
+  twilio_flutter_conversations: ^0.0.2
 ```
 
-(Git/path install options are in [CONSUMER_GUIDE.md](CONSUMER_GUIDE.md#1-add-dependencies).)
+See [pub.dev](https://pub.dev/packages/twilio_flutter_conversations) for the latest version. Git install is optional in [CONSUMER_GUIDE.md](CONSUMER_GUIDE.md#1-add-dependencies).
 
 Run `pod install` in your app `ios/` directory after the first `flutter pub get`.
 

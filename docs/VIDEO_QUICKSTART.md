@@ -6,8 +6,10 @@ Full install, permissions, and Conversations + Video together: **[CONSUMER_GUIDE
 
 ```yaml
 dependencies:
-  twilio_flutter_video: ^0.1.0
+  twilio_flutter_video: ^0.0.2
 ```
+
+See [pub.dev](https://pub.dev/packages/twilio_flutter_video) for the latest version.
 
 ## Connect
 
